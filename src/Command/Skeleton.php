@@ -309,9 +309,9 @@ class Skeleton
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\Table;
 
-class {TYPE}Table extends AbstractTable
+class {TYPE}Table extends Table
 {
     use {TYPE}TableTrait;
 }
@@ -379,9 +379,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\Row;
 
-class {TYPE}Row extends AbstractRow
+class {TYPE}Row extends Row
 {
 }
 
@@ -391,9 +391,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractRowIdentity;
+use Atlas\Orm\Table\RowIdentity;
 
-class {TYPE}RowIdentity extends AbstractRowIdentity
+class {TYPE}RowIdentity extends RowIdentity
 {
 }
 
@@ -403,9 +403,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\RowSet;
 
-class {TYPE}RowSet extends AbstractRowSet
+class {TYPE}RowSet extends RowSet
 {
 }
 
@@ -415,22 +415,22 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractRowFactory;
+use Atlas\Orm\Table\RowFactory;
 
-class {TYPE}RowFactory extends AbstractRowFactory
+class {TYPE}RowFactory extends RowFactory
 {
     use {TYPE}TableTrait;
 }
 
 TPL;
 
-        $this->templates['RowFilter'] = <<<TPL
+        $this->templates['TableEvents'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\AbstractRowFilter;
+use Atlas\Orm\Table\TableEvents;
 
-class {TYPE}RowFilter extends AbstractRowFilter
+class {TYPE}TableEvents extends TableEvents
 {
 }
 
@@ -440,9 +440,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\Mapper;
 
-class {TYPE}Mapper extends AbstractMapper
+class {TYPE}Mapper extends Mapper
 {
 }
 
@@ -452,9 +452,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\Record;
 
-class {TYPE}Record extends AbstractRecord
+class {TYPE}Record extends Record
 {
 }
 
@@ -464,9 +464,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\RecordSet;
 
-class {TYPE}RecordSet extends AbstractRecordSet
+class {TYPE}RecordSet extends RecordSet
 {
 }
 
@@ -476,21 +476,21 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\RecordFactory;
 
-class {TYPE}RecordFactory extends AbstractRecordFactory
+class {TYPE}RecordFactory extends RecordFactory
 {
 }
 
 TPL;
 
-        $this->templates['RecordFilter'] = <<<TPL
+        $this->templates['MapperEvents'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\MapperEvents;
 
-class {TYPE}RecordFilter extends AbstractRecordFilter
+class {TYPE}MapperEvents extends MapperEvents
 {
 }
 
@@ -500,9 +500,9 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\Relations;
 
-class {TYPE}Relations extends AbstractRelations
+class {TYPE}Relations extends Relations
 {
     protected function setRelations()
     {
