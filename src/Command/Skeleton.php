@@ -309,25 +309,14 @@ class Skeleton
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Table\Table;
+use Atlas\Orm\Table\AbstractTable;
 
-class {TYPE}Table extends Table
-{
-    use {TYPE}TableTrait;
-}
-
-TPL;
-
-        $this->templates['TableTrait'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-trait {TYPE}TableTrait
+class {TYPE}Table extends AbstractTable
 {
     /**
      * @inheritdoc
      */
-    public function tableName()
+    public function getName()
     {
         return '{TABLE}';
     }
@@ -335,7 +324,7 @@ trait {TYPE}TableTrait
     /**
      * @inheritdoc
      */
-    public function tableCols()
+    public function getColNames()
     {
         return {COLS};
     }
@@ -343,7 +332,7 @@ trait {TYPE}TableTrait
     /**
      * @inheritdoc
      */
-    public function tableInfo()
+    public function getCols()
     {
         return {INFO};
     }
@@ -351,7 +340,7 @@ trait {TYPE}TableTrait
     /**
      * @inheritdoc
      */
-    public function tablePrimary()
+    public function getPrimaryKey()
     {
         return '{PRIMARY}';
     }
@@ -359,7 +348,7 @@ trait {TYPE}TableTrait
     /**
      * @inheritdoc
      */
-    public function tableAutoinc()
+    public function getAutoinc()
     {
         return {AUTOINC};
     }
@@ -367,71 +356,10 @@ trait {TYPE}TableTrait
     /**
      * @inheritdoc
      */
-    public function tableDefault()
+    public function getColDefaults()
     {
         return {DEFAULT};
     }
-}
-
-TPL;
-
-        $this->templates['Row'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Table\Row;
-
-class {TYPE}Row extends Row
-{
-}
-
-TPL;
-
-        $this->templates['RowIdentity'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Table\RowIdentity;
-
-class {TYPE}RowIdentity extends RowIdentity
-{
-}
-
-TPL;
-
-        $this->templates['RowSet'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Table\RowSet;
-
-class {TYPE}RowSet extends RowSet
-{
-}
-
-TPL;
-
-        $this->templates['RowFactory'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Table\RowFactory;
-
-class {TYPE}RowFactory extends RowFactory
-{
-    use {TYPE}TableTrait;
-}
-
-TPL;
-
-        $this->templates['TableEvents'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Table\TableEvents;
-
-class {TYPE}TableEvents extends TableEvents
-{
 }
 
 TPL;
@@ -442,7 +370,26 @@ namespace {NAMESPACE};
 
 use Atlas\Orm\Mapper\Mapper;
 
-class {TYPE}Mapper extends Mapper
+class {TYPE}Mapper extends AbstractMapper
+{
+    /**
+     * @inheritdoc
+     */
+    protected function setRelated()
+    {
+        // no related fields
+    }
+}
+
+TPL;
+
+        $this->templates['Plugin'] = <<<TPL
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Orm\Mapper\Plugin;
+
+class {TYPE}Plugin extends Plugin
 {
 }
 
@@ -468,46 +415,6 @@ use Atlas\Orm\Mapper\RecordSet;
 
 class {TYPE}RecordSet extends RecordSet
 {
-}
-
-TPL;
-
-        $this->templates['RecordFactory'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Mapper\RecordFactory;
-
-class {TYPE}RecordFactory extends RecordFactory
-{
-}
-
-TPL;
-
-        $this->templates['MapperEvents'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Mapper\MapperEvents;
-
-class {TYPE}MapperEvents extends MapperEvents
-{
-}
-
-TPL;
-
-        $this->templates['Relations'] = <<<TPL
-<?php
-namespace {NAMESPACE};
-
-use Atlas\Orm\Mapper\Relations;
-
-class {TYPE}Relations extends Relations
-{
-    protected function setRelations()
-    {
-        // no relations
-    }
 }
 
 TPL;
