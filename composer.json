@@ -8,7 +8,7 @@
     "authors": [
         {
             "name": "Atlas.Cli Contributors",
-            "homepage": "https://github.com/atlasphp/Atlas.Atlas/contributors"
+            "homepage": "https://github.com/atlasphp/Atlas.Cli/contributors"
         }
     ],
     "require": {
@@ -18,12 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Atlas\\": "src/"
+            "Atlas\\Cli\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Atlas\\": "tests/"
+            "Atlas\\Cli\\": "tests/"
         }
     }
 }
