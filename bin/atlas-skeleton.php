@@ -1,5 +1,10 @@
 #!/usr/bin/env php
 <?php
+use Aura\Cli\CliFactory;
+use Atlas\Cli\Skeleton\SkeletonCommand;
+use Atlas\Cli\Skeleton\SkeletonInput;
+use Atlas\Cli\Fsio;
+
 error_reporting(E_ALL);
 
 $autoload = false;
@@ -24,11 +29,12 @@ if (! $autoload) {
 
 require $autoload;
 
-$cliFactory = new Aura\Cli\CliFactory();
-$command = new Atlas\Cli\Command\Skeleton(
+$cliFactory = new CliFactory();
+$command = new SkeletonCommand(
     $cliFactory->newContext($GLOBALS),
     $cliFactory->newStdio(),
-    getcwd()
+    new Fsio(),
+    new SkeletonInput()
 );
 $code = $command();
 exit($code);
