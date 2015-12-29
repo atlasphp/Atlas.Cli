@@ -2,28 +2,22 @@
 namespace Atlas\Cli\Skeleton;
 
 use Atlas\Cli\FakeFsio;
-use Aura\Cli\CliFactory;
+use Atlas\Cli\Logger;
+use Aura\Cli\Stdio\Handle;
 
 class SkeletonTest extends \PHPUnit_Framework_TestCase
 {
-    protected $skeleton;
+    protected $fsio;
+    protected $logger;
     protected $stdout;
-    protected $stderr;
+    protected $factory;
 
     protected function setUp()
     {
         $this->fsio = $this->newFsio();
-
-        $cliFactory = new CliFactory($GLOBALS);
-        $this->stdio = $cliFactory->newStdio(
-            'php://memory',
-            'php://memory',
-            'php://memory'
-        );
-        $this->stdout = $this->stdio->getStdout();
-        $this->stderr = $this->stdio->getStderr();
-
-        $this->skeleton = new Skeleton($this->fsio, $this->stdio);
+        $this->stdout = new Handle('php://memory', 'w+');
+        $this->logger = new Logger($this->stdout);
+        $this->factory = new SkeletonFactory($this->fsio, $this->logger);
     }
 
     protected function newFsio()
@@ -57,14 +51,15 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
 
         $this->fsio->mkdir('/app/DataSource');
 
-        $input = new SkeletonInput();
+        $input = $this->factory->newSkeletonInput();
         $input->dir = '/app/DataSource';
         $input->namespace = 'App\\DataSource\\Author';
         $input->full = true;
         $input->conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
         $input->table = 'authors';
 
-        $this->skeleton->__invoke($input);
+        $skeleton = $this->factory->newSkeleton();
+        $skeleton($input);
 
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorPlugin.php'));

@@ -29,11 +29,11 @@ use PDO;
  *
  *  --conn=<value>
  *      Connect to the database and create, or overwrite, a Table class.
- *      Without --table, will auto-determine the table name from the type name.
+ *      Must also pass a --table value.
  *
  *  --table=<value>
  *      Use the specified table name instead of determining from the type name.
- *      Useful only in conjunction with --conn.
+ *      Must also pass a --conn value.
  *
  */
 class SkeletonCommand
@@ -42,18 +42,18 @@ class SkeletonCommand
     protected $stdio;
     protected $fsio;
     protected $getopt;
-    protected $input;
+    protected $factory;
 
     public function __construct(
         Context $context,
         Stdio $stdio,
         Fsio $fsio,
-        Skeletoninput $input
+        SkeletonFactory $factory
     ) {
         $this->context= $context;
         $this->stdio = $stdio;
         $this->fsio = $fsio;
-        $this->input = $input;
+        $this->factory = $factory;
     }
 
     public function __invoke()
@@ -94,11 +94,12 @@ class SkeletonCommand
             $this->stdio->errln($error->getMessage());
         }
 
-        return STATUS::USAGE;
+        return Status::USAGE;
     }
 
-    protected function setinput()
+    protected function setInput()
     {
+        $this->input = $this->factory->newSkeletonInput();
         $this->input->dir = $this->getopt->get('--dir', $this->fsio->getCwd());
         $this->input->full = $this->getopt->get('--full', false);
         $this->input->namespace = $this->getopt->get(1);
@@ -124,7 +125,7 @@ class SkeletonCommand
 
     protected function runSkeleton()
     {
-        $skeleton = new Skeleton($this->fsio, $this->stdio);
+        $skeleton = $this->factory->newSkeleton();
         return $skeleton($this->input);
     }
 }
