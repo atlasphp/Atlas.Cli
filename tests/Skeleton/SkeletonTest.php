@@ -31,7 +31,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $fsio = new FakeFsio();
 
         // put the real templates into the fake fsio
-        $dir = dirname(dirname(__DIR__)) . '/src/Skeleton/Templates';
+        $dir = dirname(dirname(__DIR__)) . '/templates';
         $tpls = [
             'Mapper.tpl',
             'Plugin.tpl',
