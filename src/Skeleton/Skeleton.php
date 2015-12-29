@@ -82,20 +82,6 @@ class Skeleton
         $this->subdir =
             $this->input->dir . DIRECTORY_SEPARATOR .
             $this->type . DIRECTORY_SEPARATOR;
-
-        if ($this->fsio->isDir($this->subdir)) {
-            $this->logger->info(" Skipped: mkdir {$this->subdir}");
-            return;
-        }
-
-        try {
-            $this->fsio->mkdir($this->subdir, 0755, true);
-        } catch (Exception $e) {
-            $this->logger->error("-Failure: mkdir {$this->subdir}");
-            return Status::CANTCREAT;
-        }
-
-        $this->logger->info("+Success: mkdir {$this->subdir}");
     }
 
     protected function setVars()
@@ -201,18 +187,50 @@ class Skeleton
             $classes[] = 'RecordSet';
         }
 
-        $dir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'templates';
+        // look in custom template dir first, then default location
+        $dirs = [];
+        if ($this->input->tpl) {
+            $dirs[] = $this->input->tpl;
+        }
+        $dirs[] = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'templates';
+
         foreach ($classes as $class) {
-            $file = $dir. DIRECTORY_SEPARATOR . $class . '.tpl';
-            $this->templates[$class] = $this->fsio->get($file);
+            foreach ($dirs as $dir) {
+                $file = $dir. DIRECTORY_SEPARATOR . $class . '.tpl';
+                if ($this->fsio->isFile($file)) {
+                    $this->templates[$class] = $this->fsio->get($file);
+                }
+            }
         }
     }
 
     protected function createClasses()
     {
+        $this->logger->info("Generating skeleton data source classes.");
+        $this->logger->info("Namespace: " . $this->input->namespace);
+        $this->logger->info("Directory: " . $this->input->dir);
+        $this->mkSubDir();
         foreach ($this->templates as $class => $template) {
             $this->createClass($class, $template);
         }
+        $this->logger->info("Done!");
+    }
+
+    protected function mkSubDir()
+    {
+        if ($this->fsio->isDir($this->subdir)) {
+            $this->logger->info(" Skipped: mkdir {$this->subdir}");
+            return;
+        }
+
+        try {
+            $this->fsio->mkdir($this->subdir, 0755, true);
+        } catch (Exception $e) {
+            $this->logger->error("-Failure: mkdir {$this->subdir}");
+            return Status::CANTCREAT;
+        }
+
+        $this->logger->info("+Success: mkdir {$this->subdir}");
     }
 
     protected function createClass($class, $template)

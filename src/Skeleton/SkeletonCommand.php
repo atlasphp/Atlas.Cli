@@ -13,7 +13,9 @@ use PDO;
  *
  * Description:
  *
- *  Creates skeleton data-source classes.
+ *  Creates skeleton data source classes. By default it creates only a Mapper
+ *  class, but first-time creation should include `--conn` and `--table` to
+ *  create a Table class from the database table description.
  *
  * Usage:
  *
@@ -24,16 +26,19 @@ use PDO;
  *  --dir=<value>
  *      Write files to this directory instead of the current one.
  *
- *  --full
- *      Additionally create Record, RecordSet, and Plugin classes.
- *
  *  --conn=<value>
- *      Connect to the database and create, or overwrite, a Table class.
+ *      Connect to the database and overwrite the existing Table class.
  *      Must also pass a --table value.
  *
  *  --table=<value>
- *      Use the specified table name instead of determining from the type name.
- *      Must also pass a --conn value.
+ *      Read this table from the database. Must also pass a --conn value.
+ *
+ *  --full
+ *      Additionally create Record, RecordSet, and Plugin classes.
+ *
+ * --tpl=<value>
+ *      Use custom template files from this directory; fall back to the package
+ *      templates in the "templates/" directory.
  *
  */
 class SkeletonCommand
@@ -71,7 +76,6 @@ class SkeletonCommand
             }
         }
 
-        $this->stdio->outln('Done!');
         return Status::SUCCESS;
     }
 
@@ -82,6 +86,7 @@ class SkeletonCommand
             'full',
             'conn:',
             'table:',
+            'tpl:',
         ];
         $this->getopt = $this->context->getopt($options);
 
@@ -105,6 +110,7 @@ class SkeletonCommand
         $this->input->namespace = $this->getopt->get(1);
         $this->input->conn = $this->getConn();
         $this->input->table = $this->getopt->get('--table');
+        $this->input->tpl = $this->getopt->get('--tpl');
     }
 
     protected function getConn()

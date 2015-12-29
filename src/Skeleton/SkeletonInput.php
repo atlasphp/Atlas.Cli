@@ -10,6 +10,7 @@ class SkeletonInput
     protected $full = false;
     protected $namespace;
     protected $table;
+    protected $tpl;
 
     public function __set($key, $val)
     {
@@ -29,6 +30,9 @@ class SkeletonInput
             case 'table':
                 $val = trim($val);
                 break;
+            case 'tpl':
+                $val = rtrim(trim($val), DIRECTORY_SEPARATOR);
+                break;
             default:
                 throw new Exception("No such property: $key");
         }
@@ -39,7 +43,7 @@ class SkeletonInput
     public function __get($key)
     {
         if (! property_exists($this, $key)) {
-            throw new Exception();
+            throw new Exception("No such property: $key");
         }
 
         return $this->$key;
