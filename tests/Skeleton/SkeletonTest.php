@@ -31,7 +31,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $fsio = new FakeFsio();
 
         // put the real templates into the fake fsio
-        $dir = dirname(dirname(__DIR__)) . '/src/Skeleton/Templates';
+        $dir = dirname(dirname(__DIR__)) . '/templates';
         $tpls = [
             'Mapper.tpl',
             'Plugin.tpl',
@@ -71,6 +71,8 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+
+        var_dump($this->fsio);
     }
 
     protected function readHandle($handle)

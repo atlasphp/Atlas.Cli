@@ -206,7 +206,7 @@ class Skeleton
             $classes[] = 'RecordSet';
         }
 
-        $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Templates';
+        $dir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'templates';
         foreach ($classes as $class) {
             $file = $dir. DIRECTORY_SEPARATOR . $class . '.tpl';
             $this->templates[$class] = $this->fsio->get($file);
