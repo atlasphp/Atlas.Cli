@@ -185,6 +185,7 @@ class Skeleton
             $classes[] = 'Plugin';
             $classes[] = 'Record';
             $classes[] = 'RecordSet';
+            $classes[] = 'Row';
         }
 
         // look in custom template dir first, then default location

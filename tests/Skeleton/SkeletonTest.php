@@ -31,6 +31,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
             'Plugin.tpl',
             'Record.tpl',
             'RecordSet.tpl',
+            'Row.tpl',
             'Table.tpl',
         ];
         foreach ($tpls as $tpl) {
@@ -47,6 +48,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorPlugin.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
 
         $this->fsio->mkdir('/app/DataSource');
@@ -65,6 +67,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorPlugin.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
     }
 

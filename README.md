@@ -84,5 +84,5 @@ class ThreadMapper extends AbstractMapper
 ```
 
 If you pass `--full` to `atlas-skeleton`, it will additionally generate empty
-`Record`, `RecordSet`, and `Plugin` classes. These are required only if you
-want to add custom behaviors.
+`Row`, `Record`, `RecordSet`, and `Plugin` classes. These are required only if
+you want to add custom behaviors.
