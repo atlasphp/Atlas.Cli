@@ -103,14 +103,14 @@ class Skeleton
             return Status::FAILURE;
         }
 
-        $primary = null;
+        $primary = '';
         $autoinc = 'false';
         $list = [];
         $info = '';
         foreach ($schema->fetchTableCols($table) as $col) {
             $list[$col->name] = $col->default;
             if ($col->primary) {
-                $primary = $col->name;
+                $primary .= "            '{$col->name}'," . PHP_EOL;
             }
             if ($col->autoinc) {
                 $autoinc = 'true';
@@ -126,6 +126,8 @@ class Skeleton
                 'primary' => $col->primary,
             ], true) . ',' . PHP_EOL;
         }
+
+        $primary = '[' . PHP_EOL . $primary . '        ]';
 
         $repl = [
             ' => (object) array (' . PHP_EOL => ' => (object) [' . PHP_EOL,
@@ -151,7 +153,7 @@ class Skeleton
             '{COLS}' => $cols,
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $autoinc,
-            '{PRIMARY}' => "'$primary'",
+            '{PRIMARY}' => $primary,
             '{INFO}' => $info,
         ];
     }
