@@ -1,7 +1,7 @@
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Orm\Mapper\Mapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
 /**
  * @inheritdoc
