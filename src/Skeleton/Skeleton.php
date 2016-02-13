@@ -104,7 +104,7 @@ class Skeleton
         }
 
         $primary = '';
-        $autoinc = 'false';
+        $autoinc = "''";
         $list = [];
         $info = '';
         foreach ($schema->fetchTableCols($table) as $col) {
@@ -113,7 +113,7 @@ class Skeleton
                 $primary .= "            '{$col->name}'," . PHP_EOL;
             }
             if ($col->autoinc) {
-                $autoinc = 'true';
+                $autoinc = "'$col->name'";
             }
             $info .= "            '{$col->name}' => (object) " . var_export([
                 'name' => $col->name,
