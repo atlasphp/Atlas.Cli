@@ -34,7 +34,7 @@ use PDO;
  *      Read this table from the database. Must also pass a --conn value.
  *
  *  --full
- *      Additionally create Record, RecordSet, and Plugin classes.
+ *      Additionally create all other support classes.
  *
  * --tpl=<value>
  *      Use custom template files from this directory; fall back to the package

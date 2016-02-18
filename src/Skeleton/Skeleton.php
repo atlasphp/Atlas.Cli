@@ -184,10 +184,10 @@ class Skeleton
         }
         $classes[] = 'Mapper';
         if ($this->input->full) {
-            $classes[] = 'Plugin';
+            $classes[] = 'MapperEvents';
             $classes[] = 'Record';
             $classes[] = 'RecordSet';
-            $classes[] = 'Row';
+            $classes[] = 'TableEvents';
         }
 
         // look in custom template dir first, then default location
