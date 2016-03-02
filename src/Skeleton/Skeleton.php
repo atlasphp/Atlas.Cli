@@ -17,11 +17,13 @@ class Skeleton
     protected $subdir;
     protected $vars;
     protected $templates;
+    protected $conn = [];
 
-    public function __construct(Fsio $fsio, Logger $logger)
+    public function __construct(Fsio $fsio, Logger $logger, array $conn = [])
     {
         $this->fsio = $fsio;
         $this->logger = $logger;
+        $this->conn = $conn;
     }
 
     public function __invoke(SkeletonInput $input)
@@ -30,6 +32,7 @@ class Skeleton
 
         $methods = [
             'filterInput',
+            'setConn',
             'setType',
             'setSubdir',
             'setVars',
@@ -57,6 +60,12 @@ class Skeleton
             return Status::USAGE;
         }
 
+        if ($this->conn) {
+            // default connection already specified, so no need to check for
+            // matching --conn and --table.
+            return;
+        }
+
         $conn = $this->input->conn;
         $table = $this->input->table;
         if ($conn && ! $table) {
@@ -67,6 +76,13 @@ class Skeleton
         if (! $conn && $table) {
             $this->logger->error("Please provide a connection to use with the table name.");
             return Status::USAGE;
+        }
+    }
+
+    protected function setConn()
+    {
+        if ($this->input->conn) {
+            $this->conn = $this->input->conn;
         }
     }
 
@@ -160,7 +176,7 @@ class Skeleton
 
     protected function newSchema()
     {
-        $conn = $this->input->conn;
+        $conn = $this->conn;
 
         try {
             $pdo = new PDO(...$conn);
