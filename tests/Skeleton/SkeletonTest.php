@@ -73,7 +73,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
 
     public function testFactoryWithConnection()
     {
-        $conn = ['sqlite:'.dirname(__DIR__).DIRECTORY_SEPARATOR.'fixture.sqlite'];
+        $conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
         $input = $this->factory->newSkeletonInput();
         $input->dir = '/app/DataSource';
         $input->namespace = 'App\\DataSource\\Author';
