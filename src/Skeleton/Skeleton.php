@@ -81,8 +81,8 @@ class Skeleton
 
     protected function setConn()
     {
-        if ($this->conn) {
-            $this->input->conn = $this->conn;
+        if ($this->input->conn) {
+            $this->conn = $this->input->conn;
         }
     }
 
@@ -107,7 +107,7 @@ class Skeleton
             '{TYPE}' => $this->type,
         ];
 
-        if (! $this->input->conn) {
+        if (! $this->conn) {
             return;
         }
 
@@ -195,7 +195,7 @@ class Skeleton
     protected function setTemplates()
     {
         $classes = [];
-        if ($this->input->conn) {
+        if ($this->conn) {
             $classes[] = 'Table';
         }
         $classes[] = 'Mapper';
