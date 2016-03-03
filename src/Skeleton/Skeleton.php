@@ -81,8 +81,8 @@ class Skeleton
 
     protected function setConn()
     {
-        if ($this->input->conn) {
-            $this->conn = $this->input->conn;
+        if ($this->conn) {
+            $this->input->conn = $this->conn;
         }
     }
 
