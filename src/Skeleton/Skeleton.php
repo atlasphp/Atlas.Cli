@@ -107,7 +107,8 @@ class Skeleton
             '{TYPE}' => $this->type,
         ];
 
-        if (! $this->input->conn) {
+        $setTableVars = $this->conn && $this->input->table;
+        if (! $setTableVars) {
             return;
         }
 
@@ -195,7 +196,7 @@ class Skeleton
     protected function setTemplates()
     {
         $classes = [];
-        if ($this->input->conn) {
+        if ($this->conn && $this->input->table) {
             $classes[] = 'Table';
         }
         $classes[] = 'Mapper';
