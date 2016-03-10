@@ -31,8 +31,8 @@ class Skeleton
         $this->input = $input;
 
         $methods = [
-            'filterInput',
             'setConn',
+            'filterInput',
             'setType',
             'setSubdir',
             'setVars',
@@ -60,13 +60,7 @@ class Skeleton
             return Status::USAGE;
         }
 
-        if ($this->conn) {
-            // default connection already specified, so no need to check for
-            // matching --conn and --table.
-            return;
-        }
-
-        $conn = $this->input->conn;
+        $conn = $this->conn;
         $table = $this->input->table;
         if ($conn && ! $table) {
             $this->logger->error("Please provide a table name to use with the connection.");
