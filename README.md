@@ -4,7 +4,7 @@ This is the command-line interface package for Atlas.  It is for development use
 
 ## Installation
 
-This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://packagist.org/packages/atlas/cli).
+This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://packagist.org/packages/atlas/cli). Because Atlas is not yet stable, you will need to set `"minimum-stability": "dev"` in `composer.json`.
 
 Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
