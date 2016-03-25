@@ -4,8 +4,7 @@ This is the command-line interface package for Atlas.  It is for development use
 
 ## Installation
 
-This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://
-packagist.org/packages/atlas/cli).
+This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://packagist.org/packages/atlas/cli).
 
 Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
@@ -33,7 +32,7 @@ return [
 You can then invoke the skeleton generator using that connection. Specify a target directory for the skeleton files if you like, and pass the namespace name for the data source classes. Pass an explicit table name to keep the generator from trying to guess the name.
 
 ```bash
-./bin/atlas-skeleton.php \
+./vendor/bin/atlas-skeleton.php \
     --conn=/path/to/conn.php \
     --dir=src/App/DataSource \
     --table=threads App\\DataSource\\Thread
