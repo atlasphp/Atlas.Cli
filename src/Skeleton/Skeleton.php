@@ -180,9 +180,7 @@ class Skeleton
             return Status::UNAVAILABLE;
         }
 
-        $dsn = $conn[0];
-        $pos = strpos($dsn, ':');
-        $db = ucfirst(strtolower(substr($dsn, 0, $pos)));
+        $db = ucfirst($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
         $schemaClass = "Aura\\SqlSchema\\{$db}Schema";
         return new $schemaClass($pdo, new ColumnFactory());
     }
