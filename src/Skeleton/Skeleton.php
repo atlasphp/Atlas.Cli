@@ -48,6 +48,13 @@ class Skeleton
         }
     }
 
+    protected function setConn()
+    {
+        if ($this->input->conn) {
+            $this->conn = $this->input->conn;
+        }
+    }
+
     protected function filterInput()
     {
         if (! $this->input->dir) {
@@ -60,23 +67,9 @@ class Skeleton
             return Status::USAGE;
         }
 
-        $conn = $this->conn;
-        $table = $this->input->table;
-        if ($conn && ! $table) {
-            $this->logger->error("Please provide a table name to use with the connection.");
-            return Status::USAGE;
-        }
-
-        if (! $conn && $table) {
+        if ($this->input->table && ! $this->conn) {
             $this->logger->error("Please provide a connection to use with the table name.");
             return Status::USAGE;
-        }
-    }
-
-    protected function setConn()
-    {
-        if ($this->input->conn) {
-            $this->conn = $this->input->conn;
         }
     }
 
@@ -101,12 +94,11 @@ class Skeleton
             '{TYPE}' => $this->type,
         ];
 
-        $setTableVars = $this->conn && $this->input->table;
-        if (! $setTableVars) {
+        $table = $this->input->table;
+        if (! $table) {
             return;
         }
 
-        $table = $this->input->table;
         $schema = $this->newSchema();
         $tables = $schema->fetchTableList();
         if (! in_array($table, $tables)) {
@@ -169,7 +161,7 @@ class Skeleton
         ];
     }
 
-    protected function newSchema()
+    protected function newSchema($conn)
     {
         $conn = $this->conn;
 
@@ -188,7 +180,7 @@ class Skeleton
     protected function setTemplates()
     {
         $classes = [];
-        if ($this->conn && $this->input->table) {
+        if ($this->input->table) {
             $classes[] = 'Table';
         }
         $classes[] = 'Mapper';
