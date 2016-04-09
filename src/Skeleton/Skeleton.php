@@ -161,7 +161,7 @@ class Skeleton
         ];
     }
 
-    protected function newSchema($conn)
+    protected function newSchema()
     {
         $conn = $this->conn;
 
