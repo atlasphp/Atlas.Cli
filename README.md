@@ -4,33 +4,12 @@ This is the command-line interface package for Atlas.  It is for development use
 
 ## Installation
 
-This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://packagist.org/packages/atlas/cli).
+This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/cli](https://packagist.org/packages/atlas/cli). Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
-Because Atlas is still in development, there are possibilities that the api may break.
-So it is recommended that you lock your `composer.json` to the [appropriate release](https://github.com/atlasphp/Atlas.Cli/releases)
-as below.
 
-```json
-{
-    "require": {
-        "atlas/orm": "0.3.*@alpha"
-    }
-}
-```
-
-If you are interested in playing with the latest bleeding edge branch, you can do as
-
-```json
-{
-    "require": {
-        "atlas/orm": "@dev"
-    }
-}
-```
-
-For the ease of development you can add [atlas/cli](https://packagist.org/packages/atlas/cli)
-in the `require-dev` section of `composer.json` in the root of project which
-provide `atlas-skeleton` command-line tool.
+You can add [atlas/cli](https://packagist.org/packages/atlas/cli)
+in the `require-dev` section of `composer.json` in the root of project to
+install the `atlas-skeleton` command-line tool when installing for development.
 
 ```json
 {
@@ -43,7 +22,18 @@ provide `atlas-skeleton` command-line tool.
 }
 ```
 
-Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
+Because Atlas itself is still in development, the API is likely to break. You may wish to lock your `composer.json` to the [specific release](https://github.com/atlasphp/Atlas.Cli/releases); for example:
+
+```json
+{
+    "require": {
+        "atlas/orm": "0.3.*@alpha"
+    },
+    "require-dev": {
+        "atlas/cli": "0.3.*@alpha"
+    }
+}
+```
 
 ## Basic Usage
 
@@ -120,5 +110,5 @@ class ThreadMapper extends AbstractMapper
 ```
 
 If you pass `--full` to `atlas-skeleton`, it will additionally generate empty
-`Row`, `Record`, `RecordSet`, and `Plugin` classes. These are required only if
-you want to add custom behaviors.
+`MapperEvents`, `Record`, `RecordSet`, and `TableEvents` classes. (These are
+useful only if you want to add custom behaviors.)

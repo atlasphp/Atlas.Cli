@@ -71,6 +71,27 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
     }
 
+    public function testFactoryWithConnection()
+    {
+        $conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
+        $input = $this->factory->newSkeletonInput();
+        $input->dir = '/app/DataSource';
+        $input->namespace = 'App\\DataSource\\Author';
+        $input->full = true;
+        $input->table = 'authors';
+        $factory = new SkeletonFactory($this->fsio, $this->logger, $conn);
+
+        $skeleton = $factory->newSkeleton();
+        $skeleton($input);
+
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
+    }
+
     protected function readHandle($handle)
     {
         $text = '';

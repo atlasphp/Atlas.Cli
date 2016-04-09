@@ -17,11 +17,13 @@ class Skeleton
     protected $subdir;
     protected $vars;
     protected $templates;
+    protected $conn = [];
 
-    public function __construct(Fsio $fsio, Logger $logger)
+    public function __construct(Fsio $fsio, Logger $logger, array $conn = [])
     {
         $this->fsio = $fsio;
         $this->logger = $logger;
+        $this->conn = $conn;
     }
 
     public function __invoke(SkeletonInput $input)
@@ -29,6 +31,7 @@ class Skeleton
         $this->input = $input;
 
         $methods = [
+            'setConn',
             'filterInput',
             'setType',
             'setSubdir',
@@ -45,6 +48,13 @@ class Skeleton
         }
     }
 
+    protected function setConn()
+    {
+        if ($this->input->conn) {
+            $this->conn = $this->input->conn;
+        }
+    }
+
     protected function filterInput()
     {
         if (! $this->input->dir) {
@@ -57,14 +67,7 @@ class Skeleton
             return Status::USAGE;
         }
 
-        $conn = $this->input->conn;
-        $table = $this->input->table;
-        if ($conn && ! $table) {
-            $this->logger->error("Please provide a table name to use with the connection.");
-            return Status::USAGE;
-        }
-
-        if (! $conn && $table) {
+        if ($this->input->table && ! $this->conn) {
             $this->logger->error("Please provide a connection to use with the table name.");
             return Status::USAGE;
         }
@@ -91,11 +94,11 @@ class Skeleton
             '{TYPE}' => $this->type,
         ];
 
-        if (! $this->input->conn) {
+        $table = $this->input->table;
+        if (! $table) {
             return;
         }
 
-        $table = $this->input->table;
         $schema = $this->newSchema();
         $tables = $schema->fetchTableList();
         if (! in_array($table, $tables)) {
@@ -158,9 +161,9 @@ class Skeleton
         ];
     }
 
-    protected function newSchema()
+    protected function newSchema($conn)
     {
-        $conn = $this->input->conn;
+        $conn = $this->conn;
 
         try {
             $pdo = new PDO(...$conn);
@@ -169,9 +172,7 @@ class Skeleton
             return Status::UNAVAILABLE;
         }
 
-        $dsn = $conn[0];
-        $pos = strpos($dsn, ':');
-        $db = ucfirst(strtolower(substr($dsn, 0, $pos)));
+        $db = ucfirst($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
         $schemaClass = "Aura\\SqlSchema\\{$db}Schema";
         return new $schemaClass($pdo, new ColumnFactory());
     }
@@ -179,7 +180,7 @@ class Skeleton
     protected function setTemplates()
     {
         $classes = [];
-        if ($this->input->conn) {
+        if ($this->input->table) {
             $classes[] = 'Table';
         }
         $classes[] = 'Mapper';

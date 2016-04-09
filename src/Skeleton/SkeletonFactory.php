@@ -8,16 +8,18 @@ class SkeletonFactory
 {
     protected $fsio;
     protected $logger;
+    protected $conn;
 
-    public function __construct(Fsio $fsio, Logger $logger)
+    public function __construct(Fsio $fsio, Logger $logger, array $conn = [])
     {
         $this->fsio = $fsio;
         $this->logger = $logger;
+        $this->conn = $conn;
     }
 
     public function newSkeleton()
     {
-        return new Skeleton($this->fsio, $this->logger);
+        return new Skeleton($this->fsio, $this->logger, $this->conn);
     }
 
     public function newSkeletonInput()
