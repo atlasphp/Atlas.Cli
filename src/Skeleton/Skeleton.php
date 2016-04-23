@@ -192,11 +192,12 @@ class Skeleton
         }
 
         // look in custom template dir first, then default location
-        $dirs = [];
+        $dirs = [
+            dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'templates'
+        ];
         if ($this->input->tpl) {
             $dirs[] = $this->input->tpl;
         }
-        $dirs[] = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'templates';
 
         foreach ($classes as $class) {
             foreach ($dirs as $dir) {
