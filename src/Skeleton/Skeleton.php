@@ -204,6 +204,7 @@ class Skeleton
                 $file = $dir. DIRECTORY_SEPARATOR . $class . '.tpl';
                 if ($this->fsio->isFile($file)) {
                     $this->templates[$class] = $this->fsio->get($file);
+                    continue 2;
                 }
             }
         }
