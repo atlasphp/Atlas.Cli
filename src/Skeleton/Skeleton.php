@@ -24,15 +24,89 @@ use PDO;
  */
 class Skeleton
 {
+    /**
+     *
+     * Logger for output.
+     *
+     * @var Logger
+     *
+     */
     protected $logger;
+
+    /**
+     *
+     * Filesysyem I/O object.
+     *
+     * @var Fsio
+     *
+     */
     protected $fsio;
+
+    /**
+     *
+     * Command input values.
+     *
+     * @var SkeletonInput
+     *
+     */
     protected $input;
+
+    /**
+     *
+     * The "type" for the skeleton being created.
+     *
+     * @var string
+     *
+     */
     protected $type;
+
+    /**
+     *
+     * The subdirectory where skeleton files will go for the "type".
+     *
+     * @var string
+     *
+     */
     protected $subdir;
+
+    /**
+     *
+     * Variables to be interpolated into the templates.
+     *
+     * @var array
+     *
+     */
     protected $vars;
+
+    /**
+     *
+     * The templates for the different skeleton classes.
+     *
+     * @var array
+     *
+     */
     protected $templates;
+
+    /**
+     *
+     * Database connection information.
+     *
+     * @var array
+     *
+     */
     protected $conn = [];
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param Fsio $fsio A filesystem i/o handler.
+     *
+     * @param Logger $logger The output logger.
+     *
+     * @param array $conn Database connection information.
+     *
+     */
     public function __construct(Fsio $fsio, Logger $logger, array $conn = [])
     {
         $this->fsio = $fsio;
@@ -40,6 +114,15 @@ class Skeleton
         $this->conn = $conn;
     }
 
+    /**
+     *
+     * Invokes the skeleton-building process.
+     *
+     * @param SkeletonInput $input Input from the skeleton command.
+     *
+     * @return int An exit status for the calling code.
+     *
+     */
     public function __invoke(SkeletonInput $input)
     {
         $this->input = $input;
@@ -62,6 +145,13 @@ class Skeleton
         }
     }
 
+    /**
+     *
+     * Sets the connection information.
+     *
+     * @return int|null An exit status code, or null if all is well.
+     *
+     */
     protected function setConn()
     {
         if ($this->input->conn) {
@@ -69,6 +159,13 @@ class Skeleton
         }
     }
 
+    /**
+     *
+     * Filters the command input.
+     *
+     * @return null
+     *
+     */
     protected function filterInput()
     {
         if (! $this->input->dir) {
@@ -87,6 +184,13 @@ class Skeleton
         }
     }
 
+    /**
+     *
+     * Sets the "type" for the skeleton classes being generated.
+     *
+     * @return null
+     *
+     */
     protected function setType()
     {
         $namespace = $this->input->namespace;
@@ -94,6 +198,13 @@ class Skeleton
         $this->type = ltrim(substr($namespace, $lastNsPos), '\\');
     }
 
+    /**
+     *
+     * Set the subdirectory where the skeleton files will go.
+     *
+     * @return null
+     *
+     */
     protected function setSubdir()
     {
         $this->subdir =
@@ -101,6 +212,13 @@ class Skeleton
             $this->type . DIRECTORY_SEPARATOR;
     }
 
+    /**
+     *
+     * Sets the variables to be interpolated into the the templates.
+     *
+     * @return int|null An exit code, or null if all is well.
+     *
+     */
     protected function setVars()
     {
         $this->vars = [
@@ -175,6 +293,13 @@ class Skeleton
         ];
     }
 
+    /**
+     *
+     * Gets a new SQL schema description object.
+     *
+     * @return int|object An exit code, or an SQL schema description object.
+     *
+     */
     protected function newSchema()
     {
         $conn = $this->conn;
@@ -191,6 +316,13 @@ class Skeleton
         return new $schemaClass($pdo, new ColumnFactory());
     }
 
+    /**
+     *
+     * Gets and retains the templates.
+     *
+     * @return null
+     *
+     */
     protected function setTemplates()
     {
         $classes = [];
@@ -223,6 +355,13 @@ class Skeleton
         }
     }
 
+    /**
+     *
+     * Actually writes all the skeleton class files to the filesystem.
+     *
+     * @return null
+     *
+     */
     protected function createClasses()
     {
         $this->logger->info("Generating skeleton data source classes.");
@@ -235,6 +374,13 @@ class Skeleton
         $this->logger->info("Done!");
     }
 
+    /**
+     *
+     * Actually creates the subdirectory for the skeleton files.
+     *
+     * @return int|null An exit code, or null if all is well.
+     *
+     */
     protected function mkSubDir()
     {
         if ($this->fsio->isDir($this->subdir)) {
@@ -252,6 +398,13 @@ class Skeleton
         $this->logger->info("+Success: mkdir {$this->subdir}");
     }
 
+    /**
+     *
+     * Actually writes a single skeleton class file to the filesystem.
+     *
+     * @return null
+     *
+     */
     protected function createClass($class, $template)
     {
         $file = $this->subdir . $this->type . $class . '.php';

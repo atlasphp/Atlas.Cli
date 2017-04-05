@@ -47,6 +47,8 @@ use PDO;
  *      Use custom template files from this directory; fall back to the package
  *      templates in the "templates/" directory.
  *
+ * @package atlas/cli
+ *
  */
 class SkeletonCommand
 {
