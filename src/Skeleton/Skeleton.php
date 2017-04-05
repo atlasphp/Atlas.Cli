@@ -53,7 +53,7 @@ class Skeleton
 
     /**
      *
-     * The "type" for the skeleton being created.
+     * The "type" (namespace) for the skeleton being created.
      *
      * @var string
      *

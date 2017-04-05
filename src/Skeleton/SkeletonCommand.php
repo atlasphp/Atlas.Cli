@@ -52,12 +52,64 @@ use PDO;
  */
 class SkeletonCommand
 {
+    /**
+     *
+     * The command-line execution context.
+     *
+     * @var Context
+     *
+     */
     protected $context;
+
+    /**
+     *
+     * Standard I/O handler.
+     *
+     * @var Stdio
+     *
+     */
     protected $stdio;
+
+    /**
+     *
+     * Filesystem I/O handler.
+     *
+     * @var Fsio
+     *
+     */
     protected $fsio;
+
+    /**
+     *
+     * Command-line options, flags, and arguments.
+     *
+     * @var Getopt
+     *
+     */
     protected $getopt;
+
+    /**
+     *
+     * A factory to create the Skeleton object.
+     *
+     * @var SkeletonFactory
+     *
+     */
     protected $factory;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param Context $context The command-line execution context.
+     *
+     * @param Stdio $stdio A standard I/O handler.
+     *
+     * @param Fsio $fsio A filesystem I/O handler.
+     *
+     * @param SkeletonFactory $factory A factory for the Skeleton object.
+     *
+     */
     public function __construct(
         Context $context,
         Stdio $stdio,
@@ -70,6 +122,13 @@ class SkeletonCommand
         $this->factory = $factory;
     }
 
+    /**
+     *
+     * Invokes this command by calling a series of methods in sequence.
+     *
+     * @return int An exit code.
+     *
+     */
     public function __invoke()
     {
         $methods = [
@@ -88,6 +147,13 @@ class SkeletonCommand
         return Status::SUCCESS;
     }
 
+    /**
+     *
+     * Builds and validates the command-line options, flags, and arguments.
+     *
+     * @return int|null An exit code, or null if all is well.
+     *
+     */
     protected function setGetopt()
     {
         $options = [
@@ -111,6 +177,13 @@ class SkeletonCommand
         return Status::USAGE;
     }
 
+    /**
+     *
+     * Sets the input values from getopt.
+     *
+     * @return null
+     *
+     */
     protected function setInput()
     {
         $this->input = $this->factory->newSkeletonInput();
@@ -122,6 +195,13 @@ class SkeletonCommand
         $this->input->tpl = $this->getopt->get('--tpl');
     }
 
+    /**
+     *
+     * Gets the database connection information.
+     *
+     * @return mixed The connection information, if any.
+     *
+     */
     protected function getConn()
     {
         $file = $this->getopt->get('--conn');
@@ -138,6 +218,13 @@ class SkeletonCommand
         return $require($file);
     }
 
+    /**
+     *
+     * Creates and runs the Skeleton processor.
+     *
+     * @return mixed
+     *
+     */
     protected function runSkeleton()
     {
         $skeleton = $this->factory->newSkeleton();
