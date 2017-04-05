@@ -8,13 +8,15 @@
  */
 namespace Atlas\Cli;
 
+use Aura\Cli\Stdio\Handle;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
-use Aura\Cli\Stdio\Handle;
 
 /**
  *
  * A basic logger implementation that writes to a resource handle.
+ *
+ * @package atlas/cli
  *
  */
 class Logger extends AbstractLogger

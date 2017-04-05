@@ -8,6 +8,13 @@
  */
 namespace Atlas\Cli;
 
+/**
+ *
+ * Package-specific exception.
+ *
+ * @package atlas/cli
+ *
+ */
 class Exception extends \Exception
 {
 }

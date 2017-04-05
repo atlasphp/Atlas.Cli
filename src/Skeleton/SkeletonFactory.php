@@ -11,6 +11,13 @@ namespace Atlas\Cli\Skeleton;
 use Atlas\Cli\Fsio;
 use Atlas\Cli\Logger;
 
+/**
+ *
+ * Creates the Skeleton object.
+ *
+ * @package atlas/cli
+ *
+ */
 class SkeletonFactory
 {
     protected $fsio;

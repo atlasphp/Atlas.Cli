@@ -10,6 +10,13 @@ namespace Atlas\Cli;
 
 use Atlas\Cli\Exception;
 
+/**
+ *
+ * File system input/output.
+ *
+ * @package atlas/cli
+ *
+ */
 class Fsio
 {
     public function get($file)

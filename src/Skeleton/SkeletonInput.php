@@ -10,6 +10,13 @@ namespace Atlas\Cli\Skeleton;
 
 use Atlas\Cli\Exception;
 
+/**
+ *
+ * The Skeleton command input values.
+ *
+ * @package atlas/cli
+ *
+ */
 class SkeletonInput
 {
     protected $conn;
