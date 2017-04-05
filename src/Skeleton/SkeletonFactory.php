@@ -20,10 +20,44 @@ use Atlas\Cli\Logger;
  */
 class SkeletonFactory
 {
+    /**
+     *
+     * Filesystem I/O handler.
+     *
+     * @var Fsio
+     *
+     */
     protected $fsio;
+
+    /**
+     *
+     * Logger for output.
+     *
+     * @var Logger
+     *
+     */
     protected $logger;
+
+    /**
+     *
+     * Database connection information.
+     *
+     * @var array
+     *
+     */
     protected $conn;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param Fsio $fsio A filesystem I/O handler.
+     *
+     * @param Logger $logger The output logger.
+     *
+     * @param array $conn Database connection information.
+     *
+     */
     public function __construct(Fsio $fsio, Logger $logger, array $conn = [])
     {
         $this->fsio = $fsio;
@@ -31,11 +65,25 @@ class SkeletonFactory
         $this->conn = $conn;
     }
 
+    /**
+     *
+     * Returns a new Skeleton object.
+     *
+     * @return Skeleton
+     *
+     */
     public function newSkeleton()
     {
         return new Skeleton($this->fsio, $this->logger, $this->conn);
     }
 
+    /**
+     *
+     * Returns a new SkeletonInput object.
+     *
+     * @return SkeletonInput
+     *
+     */
     public function newSkeletonInput()
     {
         return new SkeletonInput();

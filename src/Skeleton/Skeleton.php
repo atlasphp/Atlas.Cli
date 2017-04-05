@@ -402,6 +402,10 @@ class Skeleton
      *
      * Actually writes a single skeleton class file to the filesystem.
      *
+     * @param string $class The class name.
+     *
+     * @param string $template The template text.
+     *
      * @return null
      *
      */
