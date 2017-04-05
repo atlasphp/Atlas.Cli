@@ -1,4 +1,11 @@
 <?php
+/**
+ *
+ * This file is part of Atlas for PHP.
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Atlas\Cli\Skeleton;
 
 use Atlas\Cli\Fsio;
@@ -8,6 +15,13 @@ use Aura\SqlSchema\ColumnFactory;
 use Exception;
 use PDO;
 
+/**
+ *
+ * Builds the skeleton for a mapper.
+ *
+ * @package atlas/cli
+ *
+ */
 class Skeleton
 {
     protected $logger;
