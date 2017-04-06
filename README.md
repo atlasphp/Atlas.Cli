@@ -70,38 +70,3 @@ Do that once for each SQL table in your database.
 If you pass `--full` to `atlas-skeleton`, it will additionally generate empty
 `MapperEvents`, `Record`, `RecordSet`, and `TableEvents` classes. (These are
 useful only if you want to add custom behaviors.)
-
-## Adding Relationships
-
-You can add relationships by editing the _Mapper_ class:
-
-```php
-<?php
-namespace App\DataSource\Thread;
-
-use App\DataSource\Author\AuthorMapper;
-use App\DataSource\Summary\SummaryMapper;
-use App\DataSource\Reply\ReplyMapper;
-use App\DataSource\Tagging\TaggingMapper;
-use App\DataSource\Tag\TagMapper;
-use Atlas\Orm\Mapper\AbstractMapper;
-
-class ThreadMapper extends AbstractMapper
-{
-    protected function setRelations()
-    {
-        // aka "belongs to"
-        $this->manyToOne('author', AuthorMapper::CLASS);
-
-        // aka "has one"
-        $this->oneToOne('summary', SummaryMapper::CLASS);
-
-        // aka "has many"
-        $this->oneToMany('replies', ReplyMapper::CLASS);
-        $this->oneToMany('taggings', TaggingMapper::CLASS);
-
-        // aks "has many through"
-        $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
-    }
-}
-```
