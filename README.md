@@ -104,5 +104,4 @@ class ThreadMapper extends AbstractMapper
         $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
     }
 }
-?>
 ```
