@@ -14,9 +14,6 @@ to install the `atlas-skeleton` command-line tool.
 
 ```json
 {
-    "require": {
-        "atlas/orm": "~1.0"
-    },
     "require-dev": {
         "atlas/cli": "~1.0"
     }
