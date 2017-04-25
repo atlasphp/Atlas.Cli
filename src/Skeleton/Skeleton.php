@@ -202,7 +202,7 @@ class Skeleton
         foreach ($classes as $class) {
             foreach ($dirs as $dir) {
                 $file = $dir. DIRECTORY_SEPARATOR . $class . '.tpl';
-                if ($this->fsio->isFile($file)) {
+                if ($this->fsio->isFile($file) && !isset($this->templates[$class])) {
                     $this->templates[$class] = $this->fsio->get($file);
                 }
             }
