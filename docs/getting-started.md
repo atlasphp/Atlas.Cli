@@ -48,8 +48,13 @@ from trying to guess the name.
 ./vendor/bin/atlas-skeleton.php \
     --conn=/path/to/conn.php \
     --dir=src/App/DataSource \
-    --table=threads App\\DataSource\\Thread
+    --table=threads \
+    App\\DataSource\\Thread
 ```
+
+> N.b.: The backslashes (`\`) at the end of the lines are to allow the command
+> to be split across multiple lines in Unix. If you are on Windows, omit the
+> trailing backslashes and enter the command on a single line.
 
 That will create this directory and two classes in `src/App/DataSource/`:
 
