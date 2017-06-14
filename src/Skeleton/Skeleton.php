@@ -227,13 +227,18 @@ class Skeleton
         ];
 
         $table = $this->input->table;
+        $database = null;
+        $cleanTable = $table;
+
         if (! $table) {
             return;
+        } elseif (strpos($table, '.')) {
+            list($database, $cleanTable) = explode('.', $table, 2);
         }
 
         $schema = $this->newSchema();
-        $tables = $schema->fetchTableList();
-        if (! in_array($table, $tables)) {
+        $tables = $schema->fetchTableList($database);
+        if (! in_array($cleanTable, $tables)) {
             $this->logger->error("-Failure: table '{$table}' not found.");
             return Status::FAILURE;
         }

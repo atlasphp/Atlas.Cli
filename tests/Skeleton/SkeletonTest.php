@@ -71,6 +71,27 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
     }
 
+    public function testTableWithDatabase()
+    {
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+
+        $this->fsio->mkdir('/app/DataSource');
+
+        $input = $this->factory->newSkeletonInput();
+        $input->dir = '/app/DataSource';
+        $input->namespace = 'App\\DataSource\\Author';
+        $input->conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
+        $input->table = 'main.authors';
+
+        $skeleton = $this->factory->newSkeleton();
+        $skeleton($input);
+
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertContains('main.authors', $this->fsio->get('/app/DataSource/Author/AuthorTable.php'));
+    }
+
     public function testFactoryWithConnection()
     {
         $conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
