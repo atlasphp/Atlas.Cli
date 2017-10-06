@@ -1,4 +1,4 @@
-# Skeleton Generator
+# Atlas.Cli 1.x
 
 This is the command-line interface package for Atlas. It is intended for use
 in your development environments, not your production ones.
