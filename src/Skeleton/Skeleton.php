@@ -279,18 +279,22 @@ class Skeleton
         $info = '[' . PHP_EOL . $info . '        ]';
 
         $cols = "[" . PHP_EOL;
+        $properties = PHP_EOL;
         $default = "[" . PHP_EOL;
         foreach ($list as $col => $val) {
             $val = ($val === null) ? 'null' : var_export($val, true);
             $cols .= "            '$col'," . PHP_EOL;
+            $properties .= " * @property string \$$col" . PHP_EOL;
             $default .= "            '$col' => $val," . PHP_EOL;
         }
         $cols .= "        ]";
+        $properties .= ' *';
         $default .= "        ]";
 
         $this->vars += [
             '{TABLE}' => "'$table'",
             '{COLS}' => $cols,
+            '{PROPERTY}' => $properties,
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $autoinc,
             '{PRIMARY}' => $primary,
