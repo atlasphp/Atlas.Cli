@@ -5,7 +5,7 @@ class FakeFsio extends Fsio
 {
     protected $files = array();
     protected $dirs = array();
-    protected $timestamps = array();
+    protected $saveCount = array();
 
     public function get($file)
     {
@@ -15,7 +15,10 @@ class FakeFsio extends Fsio
     public function put($file, $data)
     {
         $this->files[$file] = $data;
-        $this->timestamps[$file] = time();
+        if (!isset($this->saveCount[$file])) {
+            $this->saveCount[$file] = 0;
+        }
+        $this->saveCount[$file]++;
     }
 
     public function isFile($file)
@@ -33,8 +36,8 @@ class FakeFsio extends Fsio
         $this->dirs[$dir] = true;
     }
 
-    public function getModifiedTime($file)
+    public function getSaveCount($file)
     {
-        return $this->timestamps[$file] ?: 0;
+        return $this->saveCount[$file] ?: 0;
     }
 }

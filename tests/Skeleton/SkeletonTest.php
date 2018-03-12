@@ -107,18 +107,16 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
 
-        $mapperTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorMapper.php');
-        $tableTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorTable.php');
-        $fieldsTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorFields.php');
-
-        sleep(1);
+        $mapperSaveCount = $this->fsio->getSaveCount('/app/DataSource/Author/AuthorMapper.php');
+        $tableSaveCount = $this->fsio->getSaveCount('/app/DataSource/Author/AuthorTable.php');
+        $fieldsSaveCount = $this->fsio->getSaveCount('/app/DataSource/Author/AuthorFields.php');
 
         $input->full = false;
         $skeleton($input);
 
-        $this->assertEquals($mapperTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorMapper.php'));
-        $this->assertGreaterThan($tableTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorTable.php'));
-        $this->assertGreaterThan($fieldsTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorFields.php'));
+        $this->assertEquals($mapperSaveCount, $this->fsio->getSaveCount('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertGreaterThan($tableSaveCount, $this->fsio->getSaveCount('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertGreaterThan($fieldsSaveCount, $this->fsio->getSaveCount('/app/DataSource/Author/AuthorFields.php'));
     }
 
     public function testTableWithDatabase()
