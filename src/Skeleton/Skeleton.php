@@ -282,9 +282,10 @@ class Skeleton
         $properties = PHP_EOL;
         $default = "[" . PHP_EOL;
         foreach ($list as $col => $val) {
-            $val = ($val === null) ? 'null' : var_export($val, true);
+            $valCanBeNull = $val === null;
+            $val = $valCanBeNull ? 'null' : var_export($val, true);
             $cols .= "            '$col'," . PHP_EOL;
-            $properties .= " * @property string \$$col" . PHP_EOL;
+            $properties .= " * @property ". ($valCanBeNull ? '?' : '') . "string \$$col" . PHP_EOL;
             $default .= "            '$col' => $val," . PHP_EOL;
         }
         $cols .= "        ]";
