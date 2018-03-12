@@ -29,6 +29,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $tpls = [
             'Mapper.tpl',
             'MapperEvents.tpl',
+            'Fields.tpl',
             'Record.tpl',
             'RecordSet.tpl',
             'Table.tpl',
@@ -46,6 +47,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
@@ -65,6 +67,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
@@ -107,6 +110,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));

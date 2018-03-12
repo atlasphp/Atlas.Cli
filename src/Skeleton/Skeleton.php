@@ -341,6 +341,7 @@ class Skeleton
         $classes[] = 'Mapper';
         if ($this->input->full) {
             $classes[] = 'MapperEvents';
+            $classes[] = 'Fields';
             $classes[] = 'Record';
             $classes[] = 'RecordSet';
             $classes[] = 'TableEvents';
