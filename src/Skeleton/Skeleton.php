@@ -246,9 +246,16 @@ class Skeleton
         $primary = '';
         $autoinc = "''";
         $list = [];
+        $columnDefinitions = [];
         $info = '';
         foreach ($schema->fetchTableCols($table) as $col) {
             $list[$col->name] = $col->default;
+            $columnDefinitions[$col->name] = vsprintf("%s%s %sNULL", [
+                strtoupper($col->type),
+                $col->size ? "($col->size)" : "",
+                $col->notnull ? 'NOT ' : ''
+            ]);
+
             if ($col->primary) {
                 $primary .= "            '{$col->name}'," . PHP_EOL;
             }
@@ -279,18 +286,25 @@ class Skeleton
         $info = '[' . PHP_EOL . $info . '        ]';
 
         $cols = "[" . PHP_EOL;
+        $properties = PHP_EOL;
         $default = "[" . PHP_EOL;
         foreach ($list as $col => $val) {
-            $val = ($val === null) ? 'null' : var_export($val, true);
+            $val = $val === null ? 'null' : var_export($val, true);
             $cols .= "            '$col'," . PHP_EOL;
+            $properties .= " * @property mixed \$$col";
+            if (isset($columnDefinitions[$col])) {
+                $properties .= " $columnDefinitions[$col]" . PHP_EOL;
+            }
             $default .= "            '$col' => $val," . PHP_EOL;
         }
         $cols .= "        ]";
+        $properties .= ' *';
         $default .= "        ]";
 
         $this->vars += [
             '{TABLE}' => "'$table'",
             '{COLS}' => $cols,
+            '{PROPERTY}' => $properties,
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $autoinc,
             '{PRIMARY}' => $primary,
@@ -337,6 +351,7 @@ class Skeleton
         $classes[] = 'Mapper';
         if ($this->input->full) {
             $classes[] = 'MapperEvents';
+            $classes[] = 'Fields';
             $classes[] = 'Record';
             $classes[] = 'RecordSet';
             $classes[] = 'TableEvents';
