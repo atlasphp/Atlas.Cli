@@ -7,6 +7,9 @@ use Aura\Cli\Stdio\Handle;
 
 class SkeletonTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var FakeFsio
+     */
     protected $fsio;
     protected $logger;
     protected $stdout;
@@ -72,6 +75,50 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
+    }
+
+    public function testUpdateFiles()
+    {
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
+
+        $this->fsio->mkdir('/app/DataSource');
+
+        $input = $this->factory->newSkeletonInput();
+        $input->dir = '/app/DataSource';
+        $input->namespace = 'App\\DataSource\\Author';
+        $input->full = true;
+        $input->conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
+        $input->table = 'authors';
+
+        $skeleton = $this->factory->newSkeleton();
+        $skeleton($input);
+
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
+
+        $mapperTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorMapper.php');
+        $tableTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorTable.php');
+        $fieldsTimestamp = $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorFields.php');
+
+        sleep(1);
+
+        $input->full = false;
+        $skeleton($input);
+
+        $this->assertEquals($mapperTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertGreaterThan($tableTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertGreaterThan($fieldsTimestamp, $this->fsio->getModifiedTime('/app/DataSource/Author/AuthorFields.php'));
     }
 
     public function testTableWithDatabase()

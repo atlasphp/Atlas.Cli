@@ -5,6 +5,7 @@ class FakeFsio extends Fsio
 {
     protected $files = array();
     protected $dirs = array();
+    protected $timestamps = array();
 
     public function get($file)
     {
@@ -14,6 +15,7 @@ class FakeFsio extends Fsio
     public function put($file, $data)
     {
         $this->files[$file] = $data;
+        $this->timestamps[$file] = time();
     }
 
     public function isFile($file)
@@ -29,5 +31,10 @@ class FakeFsio extends Fsio
     public function mkdir($dir, $mode = 0777, $deep = true)
     {
         $this->dirs[$dir] = true;
+    }
+
+    public function getModifiedTime($file)
+    {
+        return $this->timestamps[$file] ?: 0;
     }
 }

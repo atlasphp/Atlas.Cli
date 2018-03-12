@@ -347,11 +347,11 @@ class Skeleton
         $classes = [];
         if ($this->input->table) {
             $classes[] = 'Table';
+            $classes[] = 'Fields';
         }
         $classes[] = 'Mapper';
         if ($this->input->full) {
             $classes[] = 'MapperEvents';
-            $classes[] = 'Fields';
             $classes[] = 'Record';
             $classes[] = 'RecordSet';
             $classes[] = 'TableEvents';
@@ -432,7 +432,7 @@ class Skeleton
     protected function createClass($class, $template)
     {
         $file = $this->subdir . $this->type . $class . '.php';
-        if ($class !== 'Table' && $this->fsio->isFile($file)) {
+        if (!in_array($class, ['Table', 'Fields'], true) && $this->fsio->isFile($file)) {
             $this->logger->info(" Skipped: $file");
             return;
         }
