@@ -77,6 +77,30 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
     }
 
+    public function testCreateMapperAndTable()
+    {
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+
+        $this->fsio->mkdir('/app/DataSource');
+
+        $input = $this->factory->newSkeletonInput();
+        $input->dir = '/app/DataSource';
+        $input->namespace = 'App\\DataSource\\Author';
+        $input->full = false;
+        $input->conn = ['sqlite:' . dirname(__DIR__) . DIRECTORY_SEPARATOR . 'fixture.sqlite'];
+        $input->table = 'authors';
+
+        $skeleton = $this->factory->newSkeleton();
+        $skeleton($input);
+
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
+    }
+
     public function testUpdateFiles()
     {
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
@@ -112,6 +136,7 @@ class SkeletonTest extends \PHPUnit_Framework_TestCase
         $fieldsSaveCount = $this->fsio->getSaveCount('/app/DataSource/Author/AuthorFields.php');
 
         $input->full = false;
+        $skeleton = $this->factory->newSkeleton();
         $skeleton($input);
 
         $this->assertEquals($mapperSaveCount, $this->fsio->getSaveCount('/app/DataSource/Author/AuthorMapper.php'));
