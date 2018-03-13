@@ -5,6 +5,7 @@ class FakeFsio extends Fsio
 {
     protected $files = array();
     protected $dirs = array();
+    protected $saveCount = array();
 
     public function get($file)
     {
@@ -14,6 +15,10 @@ class FakeFsio extends Fsio
     public function put($file, $data)
     {
         $this->files[$file] = $data;
+        if (!isset($this->saveCount[$file])) {
+            $this->saveCount[$file] = 0;
+        }
+        $this->saveCount[$file]++;
     }
 
     public function isFile($file)
@@ -29,5 +34,10 @@ class FakeFsio extends Fsio
     public function mkdir($dir, $mode = 0777, $deep = true)
     {
         $this->dirs[$dir] = true;
+    }
+
+    public function getSaveCount($file)
+    {
+        return $this->saveCount[$file] ?: 0;
     }
 }
