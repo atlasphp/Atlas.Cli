@@ -286,25 +286,25 @@ class Skeleton
         $info = '[' . PHP_EOL . $info . '        ]';
 
         $cols = "[" . PHP_EOL;
-        $properties = PHP_EOL;
+        $properties = '';
         $default = "[" . PHP_EOL;
         foreach ($list as $col => $val) {
             $val = $val === null ? 'null' : var_export($val, true);
             $cols .= "            '$col'," . PHP_EOL;
             $properties .= " * @property mixed \$$col";
             if (isset($columnDefinitions[$col])) {
-                $properties .= " $columnDefinitions[$col]" . PHP_EOL;
+                $properties .= " $columnDefinitions[$col]";
             }
+            $properties .= PHP_EOL;
             $default .= "            '$col' => $val," . PHP_EOL;
         }
         $cols .= "        ]";
-        $properties .= ' *';
         $default .= "        ]";
 
         $this->vars += [
             '{TABLE}' => "'$table'",
             '{COLS}' => $cols,
-            '{PROPERTY}' => $properties,
+            '{PROPERTIES}' => rtrim($properties),
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $autoinc,
             '{PRIMARY}' => $primary,
