@@ -65,10 +65,17 @@ That will create this directory and two classes in `src/App/DataSource/`:
 ```
 
 The Mapper class will be empty, and the Table class will a description of the
-specified `--table`.
+specified `--table`. Note that you should not make changes to the table class,
+as they will be overwritten if you regenerate the skeleton.
 
 Do that once for each SQL table in your database.
 
 If you pass `--full` to `atlas-skeleton`, it will additionally generate empty
 `MapperEvents`, `Record`, `RecordSet`, and `TableEvents` classes. (These are
-useful only if you want to add custom behaviors.)
+useful only if you want to add custom behaviors, and will not be overwritten
+if you regenerate the skeleton.)
+
+The `--full` option will also add a `Fields` class with `@property` annotations
+for table columns on the Record. This file will be overwritten if the table
+class is regenerated, as it is defined from the table columns (which may have
+changed since the last skeleton generation).
