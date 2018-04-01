@@ -1,4 +1,4 @@
-# Atlas.Cli 1.x
+# Atlas.Cli 2.x
 
 This is the command-line interface package for Atlas. It is intended for use
 in your development environments, not your production ones.
@@ -15,67 +15,90 @@ to install the `atlas-skeleton` command-line tool.
 ```json
 {
     "require-dev": {
-        "atlas/cli": "~1.0"
+        "atlas/cli": "~2.0"
     }
 }
 ```
 
-## Creating Skeleton Classes
+## Generating Skeleton Classes
 
-You can create your data source classes by hand, but it's going to be tedious to
-do so. Instead, use the `atlas-skeleton` command to read the table information
-from the database.
+You can write your persistence model classes by hand, but it's going to be
+tedious to do so. Instead, use the `atlas-skeleton` command to read the table
+information from the database and generate them for you.
 
-Create a PHP file to return an array of connection parameters suitable for PDO:
+First, create a PHP file to return an array of configuration parameters for
+skeleton generation. Provide an array of PDO connection arguments, a string for
+the namespace prefix, and a directory to write the classes to:
 
 ```php
 <?php
-// /path/to/conn.php
+// /path/to/skeleton-config.php
 return [
-    'mysql:dbname=testdb;host=localhost',
-    'username',
-    'password'
+    'pdo' => [
+        'mysql:dbname=testdb;host=localhost',
+        'username',
+        'password',
+    ],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
 ];
-?>
 ```
 
-You can then invoke the skeleton generator using that connection. Specify a
-target directory for the skeleton files, and pass the namespace name for the
-data source classes. You can pass an explicit table name to keep the generator
-from trying to guess the name.
+You can then invoke the skeleton generator using that config file.
 
 ```bash
-./vendor/bin/atlas-skeleton.php \
-    --conn=/path/to/conn.php \
-    --dir=src/App/DataSource \
-    --table=threads \
-    App\\DataSource\\Thread
+php ./vendor/bin/atlas-skeleton.php /path/to/skeleton-config.php
 ```
 
-> N.b.: The backslashes (`\`) at the end of the lines are to allow the command
-> to be split across multiple lines in Unix. If you are on Windows, omit the
-> trailing backslashes and enter the command on a single line.
-
-That will create this directory and two classes in `src/App/DataSource/`:
+That will read every table in the database create one DataSource directory for
+each of them, each with several classes:
 
 ```
 └── Thread
-    ├── ThreadMapper.php
-    └── ThreadTable.php
+    ├── ThreadFields.php                # App\DataSource\Thread\ThreadFields
+    ├── ThreadMapper.php                # App\DataSource\Thread\ThreadMapper
+    ├── ThreadMapperRelationships.php   # App\DataSource\Thread\ThreadMapper
+    ├── ThreadMapperEvents.php          # App\DataSource\Thread\ThreadMapperEvents
+    ├── ThreadRecord.php                # App\DataSource\Thread\ThreadRecord
+    ├── ThreadRecordSet.php             # App\DataSource\Thread\ThreadRecordSet
+    ├── ThreadRow.php                   # App\DataSource\Thread\ThreadRow
+    ├── ThreadTable.php                 # App\DataSource\Thread\ThreadTable
+    ├── ThreadTableEvents.php           # App\DataSource\Thread\ThreadTableEvents
 ```
 
-The Mapper class will be empty, and the Table class will a description of the
-specified `--table`. Note that you should not make changes to the table class,
-as they will be overwritten if you regenerate the skeleton.
+Most of these classes will be empty, and are provided so you can extend their
+behavior if you wish.
 
-Do that once for each SQL table in your database.
+The following classes will be overwritten if you run the skeleton generator
+again:
 
-If you pass `--full` to `atlas-skeleton`, it will additionally generate empty
-`MapperEvents`, `Record`, `RecordSet`, and `TableEvents` classes. (These are
-useful only if you want to add custom behaviors, and will not be overwritten
-if you regenerate the skeleton.)
+- Fields.php
+- Row.php
+- Table.php
 
-The `--full` option will also add a `Fields` class with `@property` annotations
-for table columns on the Record. This file will be overwritten if the table
-class is regenerated, as it is defined from the table columns (which may have
-changed since the last skeleton generation).
+## Cutom Table Name Transformations
+
+If you are unsatisfied with how the skeleton generator transforms table names to
+persistence model type names, provide a callable of your own in the config file
+under the key 'transform':
+
+```php
+<?php
+// /path/to/skeleton-config.php
+return [
+    'pdo' => [
+        'mysql:dbname=testdb;host=localhost',
+        'username',
+        'password',
+    ],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
+    'transform' => function (string $table) : ?string {
+        // return the $table name after transforming it into
+        // a persistence model type name, or return null to
+        // skip the table entirely
+    },
+];
+```
+
+(Cf. the _Transform_ class for example behaviors.)

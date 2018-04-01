@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  *
  * This file is part of Atlas for PHP.
@@ -8,13 +10,6 @@
  */
 namespace Atlas\Cli;
 
-/**
- *
- * Package-specific exception.
- *
- * @package atlas/cli
- *
- */
 class Exception extends \Exception
 {
 }

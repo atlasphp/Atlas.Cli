@@ -1,9 +1,6 @@
 <?php
-namespace {NAMESPACE};
+namespace {NAMESPACE}\{TYPE};
 
-/**
- * @inheritdoc
- */
 class {TYPE}Record extends {TYPE}Fields
 {
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Cli;
 
-class FsioTest extends \PHPUnit_Framework_TestCase
+class FsioTest extends \PHPUnit\Framework\TestCase
 {
     protected $fsio;
     protected $base;
@@ -36,7 +36,7 @@ class FsioTest extends \PHPUnit_Framework_TestCase
         rmdir($dir);
         $this->assertFalse($this->fsio->isDir($dir));
 
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Cli\Exception',
             'mkdir(): File exists'
         );
@@ -48,7 +48,7 @@ class FsioTest extends \PHPUnit_Framework_TestCase
         $text = $this->fsio->get(__FILE__);
         $this->assertSame('<?php', substr($text, 0, 5));
 
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Cli\Exception',
             'No such file or directory'
         );
@@ -69,7 +69,7 @@ class FsioTest extends \PHPUnit_Framework_TestCase
         unlink($file);
 
         $file = $this->getPath('no-such-directory/fakefile');
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Cli\Exception',
             'No such file or directory'
         );

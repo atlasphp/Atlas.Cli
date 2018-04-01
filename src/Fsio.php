@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  *
  * This file is part of Atlas for PHP.
@@ -10,27 +12,9 @@ namespace Atlas\Cli;
 
 use Atlas\Cli\Exception;
 
-/**
- *
- * File system input/output.
- *
- * @package atlas/cli
- *
- */
 class Fsio
 {
-    /**
-     *
-     * Equivalent of file_get_contents().
-     *
-     * @param string $file Read from this file.
-     *
-     * @return string The file contents.
-     *
-     * @throws Exception on error.
-     *
-     */
-    public function get($file)
+    public function get(string $file) : string
     {
         $level = error_reporting(0);
         $result = file_get_contents($file);
@@ -44,20 +28,7 @@ class Fsio
         throw new Exception($error['message']);
     }
 
-    /**
-     *
-     * Equivalent of file_put_contents().
-     *
-     * @param string $file Write to this file.
-     *
-     * @param string $data The data to write.
-     *
-     * @return int The number of bytes written.
-     *
-     * @throws Exception on error.
-     *
-     */
-    public function put($file, $data)
+    public function put(string $file, string $data) : int
     {
         $level = error_reporting(0);
         $result = file_put_contents($file, $data);
@@ -71,50 +42,17 @@ class Fsio
         throw new Exception($error['message']);
     }
 
-    /**
-     *
-     * Does a file exist, and is it readable?
-     *
-     * @param string $file The file to check.
-     *
-     * @return bool
-     *
-     */
-    public function isFile($file)
+    public function isFile(string $file) : bool
     {
         return file_exists($file) && is_readable($file);
     }
 
-    /**
-     *
-     * Does a directory exist?
-     *
-     * @param string $dir The directory to check.
-     *
-     * @return bool
-     *
-     */
-    public function isDir($dir)
+    public function isDir(string $dir) : bool
     {
         return is_dir($dir);
     }
 
-    /**
-     *
-     * Equivalent of mkdir().
-     *
-     * @param string $dir Create this directory.
-     *
-     * @param mixed $mode The permsissions mode.
-     *
-     * @param bool $deep Create intervening directories?
-     *
-     * @return null
-     *
-     * @throws Exception on error.
-     *
-     */
-    public function mkdir($dir, $mode = 0777, $deep = true)
+    public function mkdir(string $dir, int $mode = 0777, bool $deep = true) : void
     {
         $level = error_reporting(0);
         $result = mkdir($dir, $mode, $deep);
@@ -128,14 +66,7 @@ class Fsio
         throw new Exception($error['message']);
     }
 
-    /**
-     *
-     * Equivalent of getcwd().
-     *
-     * @return string
-     *
-     */
-    public function getCwd()
+    public function getCwd() : string
     {
         return getcwd();
     }

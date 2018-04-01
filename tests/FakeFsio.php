@@ -5,39 +5,30 @@ class FakeFsio extends Fsio
 {
     protected $files = array();
     protected $dirs = array();
-    protected $saveCount = array();
 
-    public function get($file)
+    public function get(string $file) : string
     {
         return $this->files[$file];
     }
 
-    public function put($file, $data)
+    public function put(string $file, string $data) : int
     {
         $this->files[$file] = $data;
-        if (!isset($this->saveCount[$file])) {
-            $this->saveCount[$file] = 0;
-        }
-        $this->saveCount[$file]++;
+        return strlen($data);
     }
 
-    public function isFile($file)
+    public function isFile(string $file) : bool
     {
         return isset($this->files[$file]);
     }
 
-    public function isDir($dir)
+    public function isDir(string $dir) : bool
     {
         return isset($this->dirs[$dir]);
     }
 
-    public function mkdir($dir, $mode = 0777, $deep = true)
+    public function mkdir(string $dir, int $mode = 0777, bool $deep = true) : void
     {
         $this->dirs[$dir] = true;
-    }
-
-    public function getSaveCount($file)
-    {
-        return $this->saveCount[$file] ?: 0;
     }
 }
