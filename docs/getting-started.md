@@ -50,8 +50,8 @@ You can then invoke the skeleton generator using that config file.
 php ./vendor/bin/atlas-skeleton.php /path/to/skeleton-config.php
 ```
 
-That will read every table in the database create one DataSource directory for
-each of them, each with several classes:
+That will read every table in the database and create one DataSource directory
+for each of them, each with several classes:
 
 ```
 └── Thread
