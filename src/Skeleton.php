@@ -79,11 +79,13 @@ class Skeleton
             'Mapper',
             'MapperEvents',
             'MapperRelationships',
+            'MapperSelect',
             'Record',
             'RecordSet',
             'Row',
             'Table',
             'TableEvents',
+            'TableSelect',
         ];
 
         $dirs = [
