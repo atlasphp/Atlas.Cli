@@ -55,26 +55,29 @@ for each of them, each with several classes:
 
 ```
 └── Thread
-    ├── ThreadFields.php                # App\DataSource\Thread\ThreadFields
-    ├── ThreadMapper.php                # App\DataSource\Thread\ThreadMapper
-    ├── ThreadMapperRelationships.php   # App\DataSource\Thread\ThreadMapper
-    ├── ThreadMapperEvents.php          # App\DataSource\Thread\ThreadMapperEvents
-    ├── ThreadRecord.php                # App\DataSource\Thread\ThreadRecord
-    ├── ThreadRecordSet.php             # App\DataSource\Thread\ThreadRecordSet
-    ├── ThreadRow.php                   # App\DataSource\Thread\ThreadRow
-    ├── ThreadTable.php                 # App\DataSource\Thread\ThreadTable
-    ├── ThreadTableEvents.php           # App\DataSource\Thread\ThreadTableEvents
+    ├── Thread.php                  # App\DataSource\Thread\Thread
+    ├── ThreadEvents.php            # App\DataSource\Thread\ThreadEvents
+    ├── ThreadFields.php            # App\DataSource\Thread\ThreadFields
+    ├── ThreadRecord.php            # App\DataSource\Thread\ThreadRecord
+    ├── ThreadRecordSet.php         # App\DataSource\Thread\ThreadRecordSet
+    ├── ThreadRelationships.php     # App\DataSource\Thread\ThreadRelationships
+    ├── ThreadRow.php               # App\DataSource\Thread\ThreadRow
+    ├── ThreadSelect.php            # App\DataSource\Thread\ThreadSelect
+    ├── ThreadTable.php             # App\DataSource\Thread\ThreadTable
+    ├── ThreadTableEvents.php       # App\DataSource\Thread\ThreadTableEvents
+    ├── ThreadTableSelect.php       # App\DataSource\Thread\ThreadTableSelect
 ```
 
 Most of these classes will be empty, and are provided so you can extend their
-behavior if you wish.
+behavior if you wish. They also serve to assist IDEs with autocompletion of
+return typehints.
 
 The following classes will be overwritten if you run the skeleton generator
 again:
 
-- Fields.php
-- Row.php
-- Table.php
+- {TYPE}Fields.php
+- {TYPE}Row.php
+- {TYPE}Table.php
 
 ## Cutom Table Name Transformations
 
