@@ -75,17 +75,17 @@ class Skeleton
     protected function setTemplates() : ?int
     {
         $names = [
-            'Fields',
-            'Mapper',
-            'MapperEvents',
-            'MapperRelationships',
-            'MapperSelect',
-            'Record',
-            'RecordSet',
-            'Row',
-            'Table',
-            'TableEvents',
-            'TableSelect',
+            'Type',
+            'TypeEvents',
+            'TypeFields',
+            'TypeRecord',
+            'TypeRecordSet',
+            'TypeRelationships',
+            'TypeRow',
+            'TypeSelect',
+            'TypeTable',
+            'TypeTableEvents',
+            'TypeTableSelect',
         ];
 
         $dirs = [
@@ -157,7 +157,8 @@ class Skeleton
         $this->mkdir($dir);
         $vars = $this->getVars($type, $table, $columns, $sequence);
         foreach ($this->templates as $name => $code) {
-            $file = "$dir/{$type}{$name}.php";
+            $name = str_replace('Type', $type, $name);
+            $file = "{$dir}/{$name}.php";
             $this->putFile($file, $code, $vars);
         }
     }

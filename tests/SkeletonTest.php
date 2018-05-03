@@ -26,17 +26,17 @@ class SkeletonTest extends \PHPUnit\Framework\TestCase
         // put the real templates into the fake fsio
         $dir = dirname(__DIR__) . '/resources/templates';
         $tpls = [
-            'Fields.tpl',
-            'Mapper.tpl',
-            'MapperEvents.tpl',
-            'MapperRelationships.tpl',
-            'MapperSelect.tpl',
-            'Record.tpl',
-            'RecordSet.tpl',
-            'Row.tpl',
-            'Table.tpl',
-            'TableEvents.tpl',
-            'TableSelect.tpl',
+            'Type.tpl',
+            'TypeEvents.tpl',
+            'TypeFields.tpl',
+            'TypeRecord.tpl',
+            'TypeRecordSet.tpl',
+            'TypeRelationships.tpl',
+            'TypeSelect.tpl',
+            'TypeTable.tpl',
+            'TypeTableEvents.tpl',
+            'TypeRow.tpl',
+            'TypeTableSelect.tpl',
         ];
         foreach ($tpls as $tpl) {
             $file = $dir . DIRECTORY_SEPARATOR . $tpl;
@@ -48,17 +48,17 @@ class SkeletonTest extends \PHPUnit\Framework\TestCase
 
     public function test()
     {
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/Author.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorEvents.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperRelationships.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorMapperSelect.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRelationships.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorSelect.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
         $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorSelect.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
+        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTableSelect.php'));
 
         $this->fsio->mkdir('/app/DataSource');
 
@@ -71,16 +71,16 @@ class SkeletonTest extends \PHPUnit\Framework\TestCase
         $skeleton = new Skeleton($config, $this->fsio, $this->logger);
         $skeleton();
 
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/Author.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorEvents.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapper.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperEvents.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperRelationships.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorMapperSelect.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRelationships.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorSelect.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
+        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
         $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableSelect.php'));
     }
 

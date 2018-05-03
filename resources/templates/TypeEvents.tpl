@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace {NAMESPACE}\{TYPE};
 
 use Atlas\Mapper\Mapper;
@@ -9,6 +11,6 @@ use Atlas\Query\Insert;
 use Atlas\Query\Update;
 use PDOStatement;
 
-class {TYPE}MapperEvents extends MapperEvents
+class {TYPE}Events extends MapperEvents
 {
 }
