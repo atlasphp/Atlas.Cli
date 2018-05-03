@@ -6,8 +6,8 @@ namespace {NAMESPACE}\{TYPE};
 use Atlas\Table\TableSelect;
 
 /**
- * @method {TYPE}TableRow|null fetchRow()
- * @method {TYPE}TableRow[] fetchRows()
+ * @method {TYPE}Row|null fetchRow()
+ * @method {TYPE}Row[] fetchRows()
  */
 class {TYPE}TableSelect extends TableSelect
 {
