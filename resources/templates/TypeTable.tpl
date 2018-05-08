@@ -11,7 +11,7 @@ use Atlas\Table\Table;
 /**
  * @method {TYPE}Row|null fetchRow($primaryVal)
  * @method {TYPE}Row[] fetchRows(array $primaryVals)
- * @method {TYPE}Select select(array $whereEquals = [])
+ * @method {TYPE}TableSelect select(array $whereEquals = [])
  * @method {TYPE}Row newRow(array $cols = [])
  * @method {TYPE}Row newSelectedRow(array $cols)
  */
