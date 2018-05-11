@@ -58,7 +58,7 @@ return typehints.
 > **Warning:**
 >
 > If you run the skeleton generator more than once, the following classes will
-> be OVERWRITTEN and you will lose any changes to them?
+> be OVERWRITTEN and you will lose any changes to them:
 >
 > - {TYPE}Fields.php
 > - {TYPE}Row.php
