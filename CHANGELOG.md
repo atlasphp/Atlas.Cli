@@ -4,6 +4,10 @@
 
 This release fixes a docblock typehint on generated Table classes.
 
+## 2.0.0-beta2
+
+Adds @method docblock for Record::getRow().
+
 ## 2.0.0-beta1
 
 Major break from alpha1 (and the previous 1.x series) in that the generated
