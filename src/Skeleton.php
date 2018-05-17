@@ -14,6 +14,7 @@ use Atlas\Info\Info;
 use Atlas\Pdo\Connection;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\Relationship\OneToMany;
+use Atlas\Mapper\Relationship\ManyToOneVariant;
 use ReflectionClass;
 
 class Skeleton
@@ -227,7 +228,8 @@ class Skeleton
         $cols .= "    ]";
         $default .= "    ]";
 
-        $this->setRelatedProps($type, $props);
+        $fields = $props;
+        $this->setRelatedFields($type, $fields);
 
         return [
             '{NAMESPACE}' => $this->namespace,
@@ -240,10 +242,11 @@ class Skeleton
             '{COLUMNS}' => $info,
             '{AUTOINC_SEQUENCE}' => ($sequence === null) ? 'null' : "'{$sequence}'",
             '{PROPERTIES}' => rtrim($props),
+            '{FIELDS}' => rtrim($fields),
         ];
     }
 
-    protected function setRelatedProps(string $type, string &$props) : void
+    protected function setRelatedFields(string $type, string &$fields) : void
     {
         $class = "{$this->namespace}\\$type\\$type";
         if (! class_exists($class)) {
@@ -268,11 +271,15 @@ class Skeleton
                 case $def instanceof OneToMany:
                     $type = "null|\\{$foreignMapperClass}RecordSet";
                     break;
+                case $def instanceof ManyToOneVariant:
+                    $type = "null|false|\Atlas\Mapper\Record";
+                    $name .= " (variant)";
+                    break;
                 default:
                     $type = "null|false|\\{$foreignMapperClass}Record";
                     break;
             }
-            $props .= " * @property {$type} \${$name}" . PHP_EOL;
+            $fields .= " * @property {$type} \${$name}" . PHP_EOL;
         }
     }
 

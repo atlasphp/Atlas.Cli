@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace {NAMESPACE}\{TYPE};
 
 /**
-{PROPERTIES}
+{FIELDS}
  */
 trait {TYPE}Fields
 {
