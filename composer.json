@@ -14,6 +14,7 @@
     "require": {
         "php": ">=7.1.0",
         "atlas/info": "1.x@beta",
+        "atlas/mapper": "1.x@beta",
         "psr/log": "~1.0"
     },
     "autoload": {

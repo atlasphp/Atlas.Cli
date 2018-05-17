@@ -12,6 +12,9 @@ namespace Atlas\Cli;
 
 use Atlas\Info\Info;
 use Atlas\Pdo\Connection;
+use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\Relationship\OneToMany;
+use ReflectionClass;
 
 class Skeleton
 {
@@ -19,6 +22,7 @@ class Skeleton
     protected $fsio;
     protected $logger;
 
+    protected $connection;
     protected $info;
     protected $directory;
     protected $templates = [];
@@ -51,8 +55,8 @@ class Skeleton
     protected function setInfo() : ?int
     {
         $pdo = $this->config->pdo;
-        $connection = Connection::new(...$pdo);
-        $this->info = Info::new($connection);
+        $this->connection = Connection::new(...$pdo);
+        $this->info = Info::new($this->connection);
         return null;
     }
 
@@ -223,6 +227,8 @@ class Skeleton
         $cols .= "    ]";
         $default .= "    ]";
 
+        $this->setRelatedProps($type, $props);
+
         return [
             '{NAMESPACE}' => $this->namespace,
             '{TYPE}' => $type,
@@ -235,6 +241,39 @@ class Skeleton
             '{AUTOINC_SEQUENCE}' => ($sequence === null) ? 'null' : "'{$sequence}'",
             '{PROPERTIES}' => rtrim($props),
         ];
+    }
+
+    protected function setRelatedProps(string $type, string &$props) : void
+    {
+        $class = "{$this->namespace}\\$type\\$type";
+        if (! class_exists($class)) {
+            return;
+        }
+
+        $mappers = MapperLocator::new($this->connection);
+        $mapper = $mappers->get($class);
+        $rels = $mapper->getRelationships();
+
+        $rclass = new ReflectionClass(get_class($rels));
+        $rprop = $rclass->getProperty('relationships');
+        $rprop->setAccessible(true);
+        $defs = $rprop->getValue($rels);
+
+        foreach ($defs as $name => $def) {
+            $rclass = new ReflectionClass(get_class($def));
+            $rprop = $rclass->getProperty('foreignMapperClass');
+            $rprop->setAccessible(true);
+            $foreignMapperClass = $rprop->getValue($def);
+            switch (true) {
+                case $def instanceof OneToMany:
+                    $type = "null|\\{$foreignMapperClass}RecordSet";
+                    break;
+                default:
+                    $type = "null|false|\\{$foreignMapperClass}Record";
+                    break;
+            }
+            $props .= " * @property {$type} \${$name}" . PHP_EOL;
+        }
     }
 
     protected function mkdir(string $dir) : ?int
