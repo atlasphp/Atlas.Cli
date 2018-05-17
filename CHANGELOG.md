@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.0-beta4
+
+Now adds @property docblocks to the Fields trait for defined relationships.
+
 ## 2.0.0-beta3
 
 Adds a docblock typehint for Record::getRow().
