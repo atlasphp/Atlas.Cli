@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.0-beta5
+
+Fix: adds @property docblocks for relationships only on Fields, not Rows.
+
 ## 2.0.0-beta4
 
 Now adds @property docblocks to the Fields trait for defined relationships.
