@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace {NAMESPACE}\{TYPE};
 
 use Atlas\Mapper\Mapper;
+use Atlas\Table\Row;
 
 /**
  * @method {TYPE}Table getTable()
