@@ -200,8 +200,11 @@ class Skeleton
                 if ($col['scale'] !== null) {
                     $props .= ",{$col['scale']}";
                 }
-                $props .= ')' . $unsigned;
+                $props .= ')';
             }
+
+            $props .= $unsigned;
+
             if ($col['notnull'] === true) {
                 $props .= ' NOT NULL';
             }
