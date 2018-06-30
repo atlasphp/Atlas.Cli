@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.0.0-beta6
+
+Now adds a Table::DRIVER constant indicating the PDO driver used for the table.
+
+Fix: adds `use Atlas\Table\Row` to Type.tpl, since it is used as an argument
+typehint in the docblock.
+
 ## 2.0.0-beta5
 
 Fix: adds @property docblocks for relationships only on Fields, not Rows.
