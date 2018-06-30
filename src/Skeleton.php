@@ -187,14 +187,14 @@ class Skeleton
             $info .= "        '{$col['name']}' => " . var_export($col, true) . ',' . PHP_EOL;
 
 
-            $type = $col['name'];
+            $coltype = $col['type'];
             $unsigned = '';
-            if (substr(strtoupper($type), -9) == ' UNSIGNED') {
-                $unsigned = substr($type, -9);
-                $type = substr($type, 0, -9);
+            if (substr(strtoupper($coltype), -9) == ' UNSIGNED') {
+                $unsigned = substr($coltype, -9);
+                $coltype = substr($coltype, 0, -9);
             }
 
-            $props .= " * @property mixed \${$col['name']} {$type}";
+            $props .= " * @property mixed \${$col['name']} {$coltype}";
             if ($col['size'] !== null) {
                 $props .= "({$col['size']}";
                 if ($col['scale'] !== null) {
