@@ -17,6 +17,8 @@ use Atlas\Table\Table;
  */
 class {TYPE}Table extends Table
 {
+    const DRIVER = {DRIVER};
+
     const NAME = {NAME};
 
     const COLUMNS = {COLUMNS};

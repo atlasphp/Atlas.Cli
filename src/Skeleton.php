@@ -187,7 +187,14 @@ class Skeleton
             $info .= "        '{$col['name']}' => " . var_export($col, true) . ',' . PHP_EOL;
 
 
-            $props .= " * @property mixed \${$col['name']} {$col['type']}";
+            $coltype = $col['type'];
+            $unsigned = '';
+            if (substr(strtoupper($coltype), -9) == ' UNSIGNED') {
+                $unsigned = substr($coltype, -9);
+                $coltype = substr($coltype, 0, -9);
+            }
+
+            $props .= " * @property mixed \${$col['name']} {$coltype}";
             if ($col['size'] !== null) {
                 $props .= "({$col['size']}";
                 if ($col['scale'] !== null) {
@@ -195,6 +202,9 @@ class Skeleton
                 }
                 $props .= ')';
             }
+
+            $props .= $unsigned;
+
             if ($col['notnull'] === true) {
                 $props .= ' NOT NULL';
             }
@@ -231,9 +241,12 @@ class Skeleton
         $fields = $props;
         $this->setRelatedFields($type, $fields);
 
+        $driver = $this->connection->getDriverName();
+
         return [
             '{NAMESPACE}' => $this->namespace,
             '{TYPE}' => $type,
+            '{DRIVER}' => "'{$driver}'",
             '{NAME}' => "'{$table}'",
             '{COLUMN_NAMES}' => $cols,
             '{COLUMN_DEFAULTS}' => $default,
