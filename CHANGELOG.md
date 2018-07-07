@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.0
+
+First stable release.
+
 ## 2.0.0-beta6
 
 Now adds a Table::DRIVER constant indicating the PDO driver used for the table.
