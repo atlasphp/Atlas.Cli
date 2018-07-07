@@ -43,3 +43,4 @@ generate them and change your class references.
 ## 2.0.0-alpha1
 
 First alpha release.
+
