@@ -12,6 +12,8 @@ namespace Atlas\Cli;
 
 class Transform
 {
+    protected $transform = [];
+
     protected $skip = [
         'sqlite_sequence',
     ];
@@ -27,6 +29,7 @@ class Transform
         'sheep',
         'sms',
         'species',
+        'status',
     ];
 
     protected $irregular = [
@@ -64,8 +67,21 @@ class Transform
         '/s$/i' => ''
     ];
 
+    /**
+     * @param array $transform An array of key-value pairs where the key
+     * is a table name and the value is the transformation to return for it.
+     */
+    public function __construct(array $transform = [])
+    {
+        $this->transform = $transform;
+    }
+
     public function __invoke(string $table) : ?string
     {
+        if (array_key_exists($table, $this->transform)) {
+            return $this->transform[$table];
+        }
+
         if (in_array($table, $this->skip)) {
             return null;
         }
