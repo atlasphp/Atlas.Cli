@@ -49,7 +49,7 @@ if (! is_array($input)) {
 $command = new \Atlas\Cli\Skeleton(
     new Config(require $configFile),
     new Fsio(),
-    new Logger(STDOUT)
+    new Logger()
 );
 
 $code = $command();

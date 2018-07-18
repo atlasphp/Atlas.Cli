@@ -17,12 +17,15 @@ class Logger extends AbstractLogger
 {
     protected $handle;
 
-    public function __construct($handle)
+    /**
+     * @param resource $handle A resource suitable for fwrite().
+     */
+    public function __construct($handle = STDOUT)
     {
         $this->handle = $handle;
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []) : void
     {
         $replace = [];
         foreach ($context as $key => $val) {
