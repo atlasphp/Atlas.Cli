@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.1.0
+
+The Transform class now takes an array of table-to-type name conversions as
+its only constructor param, and no longer converts "status" to "statu". Updated
+the relevant documentation.
+
 ## 2.0.0
 
 First stable release.
