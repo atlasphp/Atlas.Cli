@@ -69,8 +69,28 @@ return typehints.
 ## Custom Transformations
 
 If you are unsatisfied with how the skeleton generator transforms table names to
-persistence model type names, provide a callable of your own in the config file
-under the key 'transform':
+persistence model type names, you can instantiate the `Transform` class in the
+config file under the `transform` key, and pass an array of table-to-type names
+to override the default transformations:
+
+```php
+// /path/to/skeleton-config.php
+return [
+    'pdo' => [
+        'mysql:dbname=testdb;host=localhost',
+        'username',
+        'password',
+    ],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
+    'transform' => new \Atlas\Cli\Transform([
+        'table_name' => 'TypeName',
+        // use a value of null to skip the table entirely
+    ]);
+];
+```
+
+Alternatively, provide a callable (or callable instance) of your own:
 
 ```php
 // /path/to/skeleton-config.php
@@ -89,5 +109,3 @@ return [
     },
 ];
 ```
-
-(Cf. the _Transform_ class for example behaviors.)
