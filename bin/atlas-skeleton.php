@@ -58,7 +58,6 @@ foreach ($keys as $key) {
     }
     $input = $input[$key];
     echo "found." . PHP_EOL;
-    continue;
 }
 
 $command = new \Atlas\Cli\Skeleton(
