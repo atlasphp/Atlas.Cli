@@ -46,8 +46,23 @@ if (! is_array($input)) {
     exit(1);
 }
 
+$keys = isset($_SERVER['argv'][2])
+    ? explode('.', $_SERVER['argv'][2])
+    : [];
+
+foreach ($keys as $key) {
+    echo "Nested config key '{$key}' ";
+    if (! isset($input[$key]) || ! is_array($input[$key])) {
+        echo "is not set, or is not an array.". PHP_EOL;
+        exit(1);
+    }
+    $input = $input[$key];
+    echo "found." . PHP_EOL;
+    continue;
+}
+
 $command = new \Atlas\Cli\Skeleton(
-    new Config(require $configFile),
+    new Config($input),
     new Fsio(),
     new Logger()
 );

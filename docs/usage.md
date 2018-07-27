@@ -23,6 +23,30 @@ return [
 ];
 ```
 
+> **Tip:**
+>
+> If you happen to have a generic config file for other purposes, you can nest
+> the Atlas configuration values inside that array. For example:
+>
+> ```php
+> // /path/to/settings.php
+> return [
+>     'foo' => [
+>         'bar' => [
+>             'atlas' => [
+>                 'pdo' => [
+>                     'mysql:dbname=testdb;host=localhost',
+>                     'username',
+>                     'password',
+>                 ],
+>                 'namespace' => 'App\\DataSource',
+>                 'directory' => './src/App/DataSource',
+>             ],
+>         ],
+>     ],
+> ];
+> ```
+
 ## Generate Classes
 
 You can then invoke the skeleton generator using that config file:
@@ -30,6 +54,18 @@ You can then invoke the skeleton generator using that config file:
 ```bash
 php ./vendor/bin/atlas-skeleton.php /path/to/skeleton-config.php
 ```
+
+> **Tip:**
+>
+> If you nested the Atlas keys inside the config file, pass the dot-separated
+> names of the array elements leading to the Atlas configuration array as an
+> argument immediately after the file path.
+>
+> For example, given the above array of `['foo']['bar']['atlas']`:
+>
+> ```bash
+> php ./vendor/bin/atlas-skeleton.php /path/to/settings.php foo.bar.atlas
+> ```
 
 Doing so will read every table in the database and create one DataSource
 directory for each of them, each with several classes:
