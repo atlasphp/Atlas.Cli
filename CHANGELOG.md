@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.0
+
+The skeleton generator command now accepts a second argument: a dot-separated
+list of array elements leading to nested Atlas configuration values.
+
 ## 2.1.0
 
 The Transform class now takes an array of table-to-type name conversions as
