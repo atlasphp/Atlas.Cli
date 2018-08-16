@@ -145,3 +145,66 @@ return [
     },
 ];
 ```
+
+## Custom Templates
+
+You can override the templates used by the skeleton generator and provide your
+own instead. This lets you customize the code generation; for example, to add
+your own common methods or to extend intercessory classes.
+
+First, take a look at the default templates in the Atlas.Cli `resources/templates/`
+directory:
+
+- Type.tpl
+- TypeEvents.tpl
+- TypeFields.tpl
+- TypeRecord.tpl
+- TypeRecordSet.tpl
+- TypeRelationships.tpl
+- TypeRow.tpl
+- TypeSelect.tpl
+- TypeTable.tpl
+- TypeTableEvents.tpl
+- TypeTableSelect.tpl
+
+For each persistence model type name, the word "Type" in the filename will be
+replaced with the type; `.tpl` will be replaced with `.php`. For example, a
+`threads` table will become a `Thread` type, so the resulting files will be
+`Thread.php`, `ThreadEvents.php`, and so on.
+
+To override a default template, create a custom template file of the same name
+in a directory of your own choosing. Then, in the skeleton config file, set
+a 'templates' key to that directory:
+
+```php
+// /path/to/skeleton-config.php
+return [
+    'pdo' => [
+        'mysql:dbname=testdb;host=localhost',
+        'username',
+        'password',
+    ],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
+    'templates' => '/path/to/custom-templates-dir'
+];
+```
+
+When you run the skeleton command, it will look there first for each template,
+and then use the default template only if there is not a custom one available.
+
+The skeleton file will replace these tokens in the template file with these
+values:
+
+- `{NAMESPACE}` => The namespace value from the config file.
+- `{TYPE}` => The persistence model type.
+- `{DRIVER}` => The database driver type.
+- `{NAME}` => The table name.
+- `{COLUMN_NAMES}` => An array of column names from the table.
+- `{COLUMN_DEFAULTS}` => An add of column default values from the table.
+- `{AUTOINC_COLUMN}` => The name of the autoincrement column, if any.
+- `{PRIMARY_KEY}` => An array of primary key column names.
+- `{COLUMNS}` => An array of the full column descriptions.
+- `{AUTOINC_SEQUENCE}` => The name of the auotincrement sequence, if any.
+- `{PROPERTIES}` => A partial docblock of properties for a Row.
+- `{FIELDS}` => A partial docblock of field names for a Record.
