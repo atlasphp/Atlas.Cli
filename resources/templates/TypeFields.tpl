@@ -8,6 +8,7 @@ namespace {NAMESPACE}\{TYPE};
 
 /**
 {FIELDS}
+{ACCESSORS}
  */
 trait {TYPE}Fields
 {

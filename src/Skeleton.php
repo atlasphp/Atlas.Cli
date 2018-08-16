@@ -175,6 +175,7 @@ class Skeleton
         $list = [];
         $info = '';
         $props = '';
+        $accessors = '';
 
         foreach ($columns as $col) {
             $list[$col['name']] = $col['default'];
@@ -209,6 +210,11 @@ class Skeleton
                 $props .= ' NOT NULL';
             }
             $props .= PHP_EOL;
+
+            // Accessors
+            $accessorName = $this->accessorsName($col['name']);
+            $accessors .= " * @method mixed get{$accessorName}()" . PHP_EOL;
+            $accessors .= " * @method static set{$accessorName}(\$value)" . PHP_EOL;
         }
 
         $primary = '[' . PHP_EOL . $primary . '    ]';
@@ -239,7 +245,7 @@ class Skeleton
         $default .= "    ]";
 
         $fields = $props;
-        $this->setRelatedFields($type, $fields);
+        $this->setRelatedFields($type, $fields, $accessors);
 
         $driver = $this->connection->getDriverName();
 
@@ -255,11 +261,12 @@ class Skeleton
             '{COLUMNS}' => $info,
             '{AUTOINC_SEQUENCE}' => ($sequence === null) ? 'null' : "'{$sequence}'",
             '{PROPERTIES}' => rtrim($props),
+            '{ACCESSORS}' => rtrim($accessors),
             '{FIELDS}' => rtrim($fields),
         ];
     }
 
-    protected function setRelatedFields(string $type, string &$fields) : void
+    protected function setRelatedFields(string $type, string &$fields, string &$accessors) : void
     {
         $class = "{$this->namespace}\\$type\\$type";
         if (! class_exists($class)) {
@@ -293,6 +300,11 @@ class Skeleton
                     break;
             }
             $fields .= " * @property {$type} \${$name}" . PHP_EOL;
+
+            // Accessors
+            $accessorName = $this->accessorsName($name);
+            $accessors .= " * @method {$type} get{$accessorName}()" . PHP_EOL;
+            $accessors .= " * @method static set{$accessorName}({$type} \$value)" . PHP_EOL;
         }
     }
 
@@ -328,5 +340,12 @@ class Skeleton
         $code = strtr($code, $vars);
         $this->fsio->put($file, $code);
         $this->logger->info("+Success: $file");
+    }
+
+    private function accessorsName(string $name): string
+    {
+        return preg_replace_callback('/(?:^|_)(.?)/', function ($matches) {
+            return strtoupper($matches[1]);
+        }, $name);
     }
 }
