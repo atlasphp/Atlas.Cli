@@ -4,7 +4,7 @@
 
 Transformation of words ending in double-s now handled more approproately. To
 wit, changes the regex for "ending in 's'" to be "ending in a *single* 's'" so
-that words like _address_, _class_, _illness_, _pass_, _press_, etc. are not
+that words like "address", "class", "illness", "pass", "press", etc. are not
 unexpectedly truncated.
 
 Also added documentation about custom templates.
