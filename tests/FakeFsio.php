@@ -3,8 +3,9 @@ namespace Atlas\Cli;
 
 class FakeFsio extends Fsio
 {
-    protected $files = array();
-    protected $dirs = array();
+    public $files = array();
+
+    public $dirs = array();
 
     public function get(string $file) : string
     {

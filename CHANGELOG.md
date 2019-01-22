@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.2.1
+
+Transformation of words ending in double-s now handled more approproately. To
+wit, changes the regex for "ending in 's'" to be "ending in a *single* 's'" so
+that words like _address_, _class_, _illness_, _pass_, _press_, etc. are not
+unexpectedly truncated. Also removes (the now obsolete exception) "press" from
+the list.
+
+Also added documentation about custom templates.
+
 ## 2.2.0
 
 The skeleton generator command now accepts a second argument: a dot-separated
