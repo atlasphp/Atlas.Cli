@@ -6,13 +6,13 @@ class TransformTest extends \PHPUnit\Framework\TestCase
     public function test()
     {
         $transform = new Transform();
-        foreach ($this->words as $original => $expect) {
-            $actual = $transform($original);
+        foreach ($this->tables as $table => $expect) {
+            $actual = $transform($table);
             $this->assertSame($expect, $actual);
         }
     }
 
-    protected $words = [
+    protected $tables = [
         'addresses' => 'Address',
         'classes' => 'Class',
         'illnesses' => 'Illness',
