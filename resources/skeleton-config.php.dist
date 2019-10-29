@@ -4,4 +4,10 @@
     'namespace' => 'DataSource',
     'transform' => null,
     'templates' => null,
+    'migration' => [
+        'directory' => null,
+        'namespace' => null,
+        'table' => null,
+        'column' => null,
+    ],
 ];

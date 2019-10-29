@@ -19,6 +19,7 @@ class Config
     protected $namespace;
     protected $transform;
     protected $templates;
+    protected $migration;
 
     public function __construct(array $input)
     {
@@ -38,6 +39,8 @@ class Config
 
         $this->templates = $input['templates'] ?? dirname(__DIR__) . '/resources/templates';
         $this->templates = rtrim($this->templates, DIRECTORY_SEPARATOR);
+
+        $this->migration = $input['migration'] ?? null;
     }
 
     public function __get(string $key)

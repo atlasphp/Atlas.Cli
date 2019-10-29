@@ -28,7 +28,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Atlas\\Cli\\": "tests/"
+            "Atlas\\Cli\\": "tests/",
+            "Atlas\\Cli\\Migration\\": "tests/migrations/"
         }
     },
     "bin": [
