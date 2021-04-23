@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Atlas\Cli;
 
 use Atlas\Info\Info;
+use Atlas\Mapper\Relationship\ManyToMany;
 use Atlas\Pdo\Connection;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\Relationship\OneToMany;
@@ -282,6 +283,7 @@ class Skeleton
             $foreignMapperClass = $rprop->getValue($def);
             switch (true) {
                 case $def instanceof OneToMany:
+                case $def instanceof ManyToMany:
                     $type = "null|\\{$foreignMapperClass}RecordSet";
                     break;
                 case $def instanceof ManyToOneVariant:
