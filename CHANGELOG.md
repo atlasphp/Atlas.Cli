@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.2
+
+- Fix #23: fix property return type for ManyToMany
+
 ## 2.2.1
 
 Transformation of words ending in double-s now handled more approproately. To
