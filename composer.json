@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Atlas\\Skeleton\\": "src/"
+            "Atlas\\Cli\\": "src/"
         }
     },
     "require-dev": {
