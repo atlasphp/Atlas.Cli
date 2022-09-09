@@ -32,7 +32,8 @@
         }
     },
     "bin": [
-        "bin/atlas-skeleton.php"
+        "bin/atlas-skeleton.php",
+        "bin/atlas-skeleton-upgrade.php"
     ],
     "scripts": {
         "test": "./vendor/bin/phpunit",
