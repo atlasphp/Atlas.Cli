@@ -12,13 +12,11 @@ namespace Atlas\Cli;
 
 class Transform
 {
-    protected $types = [];
-
-    protected $skip = [
+    protected array $skip = [
         'sqlite_sequence',
     ];
 
-    protected $unchanged = [
+    protected array $unchanged = [
         'equipment',
         'fish',
         'information',
@@ -31,7 +29,7 @@ class Transform
         'status',
     ];
 
-    protected $irregular = [
+    protected array $irregular = [
         'child' => 'children',
         'man' => 'men',
         'move' => 'moves',
@@ -39,7 +37,7 @@ class Transform
         'sex' => 'sexes',
     ];
 
-    protected $singular = [
+    protected array $singular = [
         '/(quiz)zes$/i' => '$1',
         '/(matr)ices$/i' => '$1ix',
         '/(vert|ind)ices$/i' => '$1ex',
@@ -67,13 +65,8 @@ class Transform
         '/s$/i' => ''
     ];
 
-    /**
-     * @param array $types An array of key-value pairs where the key
-     * is a table name and the value is the type name to return for it.
-     */
-    public function __construct(array $types = [])
+    public function __construct(protected array $types = [])
     {
-        $this->types = $types;
     }
 
     public function __invoke(string $table) : ?string

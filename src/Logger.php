@@ -12,26 +12,28 @@ namespace Atlas\Cli;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
+use Stringable;
 
 class Logger extends AbstractLogger
 {
-    protected $handle;
-
     /**
-     * @param resource $handle A resource suitable for fwrite().
+     * @param resource $handle
      */
-    public function __construct($handle = STDOUT)
+    public function __construct(protected mixed $handle = STDOUT)
     {
-        $this->handle = $handle;
     }
 
-    public function log($level, $message, array $context = []) : void
+    public function log(
+        mixed $level,
+        string|Stringable $message,
+        array $context = []
+    ) : void
     {
         $replace = [];
         foreach ($context as $key => $val) {
             $replace['{' . $key . '}'] = $val;
         }
-        $message = strtr($message, $replace);
+        $message = strtr((string) $message, $replace);
         fwrite($this->handle, $message . PHP_EOL);
     }
 }

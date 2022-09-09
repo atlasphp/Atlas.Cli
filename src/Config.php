@@ -14,11 +14,11 @@ use Atlas\Cli\Exception;
 
 class Config
 {
-    protected $pdo;
-    protected $directory;
-    protected $namespace;
-    protected $transform;
-    protected $templates;
+    public array $pdo;
+    public string $directory;
+    public string $namespace;
+    public Transform $transform;
+    public string $templates;
 
     public function __construct(array $input)
     {
@@ -40,12 +40,8 @@ class Config
         $this->templates = rtrim($this->templates, DIRECTORY_SEPARATOR);
     }
 
-    public function __get(string $key)
+    public function __get(string $key) : mixed
     {
-        if (! property_exists($this, $key)) {
-            throw new Exception("No such property: $key");
-        }
-
-        return $this->$key;
+        throw new Exception("No such property: $key");
     }
 }

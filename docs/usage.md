@@ -68,39 +68,43 @@ php ./vendor/bin/atlas-skeleton.php /path/to/skeleton-config.php
 > ```
 
 Doing so will read every table in the database and create one DataSource
-directory for each of them, each with several classes:
+directory for each of them, each with several top-level and  classes:
 
 ```
 App
 └── DataSource
-    └── Thread
-        ├── Thread.php                  # mapper
-        ├── ThreadEvents.php            # mapper-level events
-        ├── ThreadFields.php            # trait with property names
-        ├── ThreadRecord.php            # single record
-        ├── ThreadRecordSet.php         # record collection
-        ├── ThreadRelationships.php     # relationship definitions
-        ├── ThreadRow.php               # table row
-        ├── ThreadSelect.php            # mapper-level query object
-        ├── ThreadTable.php             # table defintion and interactions
-        ├── ThreadTableEvents.php       # table-level events
-        ├── ThreadTableSelect.php       # table-level query object
+    └── Thread                          # concrete classes
+        ├── Thread.php                  # mapper
+        ├── ThreadEvents.php            # mapper events
+        ├── ThreadRecord.php            # mapper record
+        ├── ThreadRecordSet.php         # mapper recordset
+        ├── ThreadRelated.php           # related records and recordsets
+        ├── ThreadRow.php               # table row
+        ├── ThreadSelect.php            # mapper select
+        ├── ThreadTable.php             # table
+        ├── ThreadTableEvents.php       # table events
+        ├── ThreadTableSelect.php       # table select
+        └── _                           # abstract classes
+            ├── ThreadEvents_.php
+            ├── ThreadRecordSet_.php
+            ├── ThreadRecord_.php
+            ├── ThreadRelated_.php
+            ├── ThreadRow_.php
+            ├── ThreadSelect_.php
+            ├── ThreadTableEvents_.php
+            ├── ThreadTableSelect_.php
+            ├── ThreadTable_.php
+            └── Thread_.php
 ```
 
-Most of these classes will be empty, and are provided so you can extend their
-behavior if you wish. They also serve to assist IDEs with autocompletion of
-return typehints.
+All of the concrete classes will be empty, and extend their abstract classes
+from the `_` directory. Edit these top-level classes as you see fit; they will
+never be overwritten by the skeleton generator.
 
-> **Warning:**
->
-> If you run the skeleton generator more than once, the following classes will
-> be OVERWRITTEN and you will lose any changes to them:
->
-> - {TYPE}Fields.php
-> - {TYPE}Row.php
-> - {TYPE}Table.php
->
-> The remaining classes will remain untouched.
+However, the `_/*_.php` generated abstract classes *will* be overwritten each
+time you run the skeleton generator. This helps with keeping the classes
+up-to-date with the database schema.
+
 
 ## Custom Transformations
 
@@ -152,25 +156,11 @@ You can override the templates used by the skeleton generator and provide your
 own instead. This lets you customize the code generation; for example, to add
 your own common methods or to extend intercessory classes.
 
-First, take a look at the default templates in the Atlas.Cli `resources/templates/`
-directory:
-
-- Type.tpl
-- TypeEvents.tpl
-- TypeFields.tpl
-- TypeRecord.tpl
-- TypeRecordSet.tpl
-- TypeRelationships.tpl
-- TypeRow.tpl
-- TypeSelect.tpl
-- TypeTable.tpl
-- TypeTableEvents.tpl
-- TypeTableSelect.tpl
-
-For each persistence model type name, the word "Type" in the filename will be
-replaced with the type; `.tpl` will be replaced with `.php`. For example, a
-`threads` table will become a `Thread` type, so the resulting files will be
-`Thread.php`, `ThreadEvents.php`, and so on.
+First, take a look at the default templates in the Atlas.Skeleton
+`resources/templates/` directory. For each persistence model type name, the
+word "Type" in the filename will be replaced with the type; `.tpl` infix will
+be removed. For example, a `threads` table will become a `Thread` type, so the
+resulting files will be `Thread.php`, `ThreadEvents.php`, and so on.
 
 To override a default template, create a custom template file of the same name
 in a directory of your own choosing. Then, in the skeleton config file, set
@@ -193,18 +183,14 @@ return [
 When you run the skeleton command, it will look there first for each template,
 and then use the default template only if there is not a custom one available.
 
-The skeleton file will replace these tokens in the template file with these
-values:
+The skeleton command provides these variables for templates to use:
 
-- `{NAMESPACE}` => The namespace value from the config file.
-- `{TYPE}` => The persistence model type.
-- `{DRIVER}` => The database driver type.
-- `{NAME}` => The table name.
-- `{COLUMN_NAMES}` => An array of column names from the table.
-- `{COLUMN_DEFAULTS}` => An add of column default values from the table.
-- `{AUTOINC_COLUMN}` => The name of the autoincrement column, if any.
-- `{PRIMARY_KEY}` => An array of primary key column names.
-- `{COLUMNS}` => An array of the full column descriptions.
-- `{AUTOINC_SEQUENCE}` => The name of the auotincrement sequence, if any.
-- `{PROPERTIES}` => A partial docblock of properties for a Row.
-- `{FIELDS}` => A partial docblock of field names for a Record.
+- `$COLUMNS` => The table column descriptions.
+- `$DRIVER` => The database driver type.
+- `$NAMESPACE` => The namespace value from the config file.
+- `$RELATED` => The related Record and RecordSet property names and types.
+- `$SEQUENCE` => The name of the auotincrement sequence, if any.
+- `$TABLE` => The table name.
+- `$TYPE` => The persistence model type.
+
+The templates are written in plain PHP, minus the opening PHP tags themselves.

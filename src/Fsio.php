@@ -25,7 +25,7 @@ class Fsio
         }
 
         $error = error_get_last();
-        throw new Exception($error['message']);
+        throw new Exception($error['message'] ?? '');
     }
 
     public function put(string $file, string $data) : int
@@ -39,7 +39,7 @@ class Fsio
         }
 
         $error = error_get_last();
-        throw new Exception($error['message']);
+        throw new Exception($error['message'] ?? '');
     }
 
     public function isFile(string $file) : bool
@@ -63,11 +63,21 @@ class Fsio
         }
 
         $error = error_get_last();
-        throw new Exception($error['message']);
+        throw new Exception($error['message'] ?? '');
     }
 
-    public function getCwd() : string
+    public function getCwd() : string|false
     {
         return getcwd();
+    }
+
+    public function glob(string $pattern)
+    {
+        return glob($pattern);
+    }
+
+    public function unlink(string $file)
+    {
+        return unlink($file);
     }
 }

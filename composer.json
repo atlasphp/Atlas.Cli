@@ -1,37 +1,42 @@
 {
-    "name": "atlas/cli",
+    "name": "atlas/skeleton",
     "type": "library",
-    "description": "Command-line interface for Atlas.",
+    "description": "Command-line interface to generate Atlas skeleton classes.",
     "keywords": [ "sql", "data", "mapper", "mapping", "orm" ],
-    "homepage": "http://github.com/atlasphp/Atlas.Cli",
+    "homepage": "http://github.com/atlasphp/Atlas.Skeleton",
     "license": "MIT",
     "authors": [
         {
-            "name": "Atlas.Cli Contributors",
-            "homepage": "https://github.com/atlasphp/Atlas.Cli/contributors"
+            "name": "Atlas.Skeleton Contributors",
+            "homepage": "https://github.com/atlasphp/Atlas.Skeleton/contributors"
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "atlas/info": "~1.0",
-        "atlas/mapper": "~1.0",
-        "psr/log": "~1.0"
+        "php": "^8.0",
+        "atlas/info": "2.x-dev",
+        "psr/log": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "Atlas\\Cli\\": "src/"
+            "Atlas\\Skeleton\\": "src/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~7.0",
-        "pds/skeleton": "~1.0"
+        "pds/skeleton": "^1.0",
+        "phpunit/phpunit": "^9.0",
+        "phpstan/phpstan": "^1.0"
     },
     "autoload-dev": {
         "psr-4": {
-            "Atlas\\Cli\\": "tests/"
+            "Atlas\\Skeleton\\": "tests/"
         }
     },
     "bin": [
         "bin/atlas-skeleton.php"
-    ]
+    ],
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "stan": "./vendor/bin/phpstan analyze -c phpstan.neon src"
+    },
+    "minimum-stability": "dev"
 }

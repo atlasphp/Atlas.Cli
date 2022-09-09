@@ -11,31 +11,31 @@ declare(strict_types=1);
 namespace Atlas\Cli;
 
 use Atlas\Info\Info;
-use Atlas\Mapper\Relationship\ManyToMany;
 use Atlas\Pdo\Connection;
-use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\Relationship\OneToMany;
-use Atlas\Mapper\Relationship\ManyToOneVariant;
 use ReflectionClass;
+use Throwable;
 
 class Skeleton
 {
-    protected $config;
-    protected $fsio;
-    protected $logger;
+    protected Connection $connection;
 
-    protected $connection;
-    protected $info;
-    protected $directory;
-    protected $templates = [];
-    protected $namespace;
-    protected $types = [];
+    protected Info $info;
 
-    public function __construct(Config $config, Fsio $fsio, Logger $logger)
-    {
-        $this->config = $config;
-        $this->fsio = $fsio;
-        $this->logger = $logger;
+    protected Transform $transform;
+
+    protected string $directory;
+
+    protected array $templates = [];
+
+    protected string $namespace;
+
+    protected array $types = [];
+
+    public function __construct(
+        protected Config $config,
+        protected Fsio $fsio,
+        protected Logger $logger
+    ) {
     }
 
     public function __invoke() : ?int
@@ -48,7 +48,7 @@ class Skeleton
                 ?? $this->setTransform()
                 ?? $this->getTypes()
                 ?? $this->putTypes();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error((string) $e);
             return 1;
         }
@@ -65,28 +65,39 @@ class Skeleton
     protected function setDirectory() : ?int
     {
         $this->directory = $this->config->directory;
+
         if (! $this->fsio->isDir($this->directory)) {
             $this->logger->error("-Directory {$this->config->directory} not found.");
             return 1;
         }
+
         return null;
     }
 
     protected function setNamespace() : ?int
     {
-        $this->namespace = rtrim($this->config->namespace, '\\');
+        $this->namespace = trim($this->config->namespace, '\\');
         return null;
     }
 
     protected function setTemplates() : ?int
     {
         $names = [
+            '_generated/Type_',
+            '_generated/TypeEvents_',
+            '_generated/TypeRecord_',
+            '_generated/TypeRecordSet_',
+            '_generated/TypeRelated_',
+            '_generated/TypeRow_',
+            '_generated/TypeSelect_',
+            '_generated/TypeTable_',
+            '_generated/TypeTableEvents_',
+            '_generated/TypeTableSelect_',
             'Type',
             'TypeEvents',
-            'TypeFields',
             'TypeRecord',
             'TypeRecordSet',
-            'TypeRelationships',
+            'TypeRelated',
             'TypeRow',
             'TypeSelect',
             'TypeTable',
@@ -104,10 +115,11 @@ class Skeleton
                 $file = str_replace(
                     '/',
                     DIRECTORY_SEPARATOR,
-                    "{$dir}/{$name}.tpl"
+                    "{$dir}/{$name}.tpl.php"
                 );
+
                 if ($this->fsio->isFile($file)) {
-                    $this->templates[$name] = $this->fsio->get($file);
+                    $this->templates[$name] = $file;
                 }
             }
         }
@@ -118,6 +130,7 @@ class Skeleton
     public function setTransform() : ?int
     {
         $this->transform = $this->config->transform;
+
         if (! is_callable($this->transform)) {
             $this->logger->error("Config key 'transform' is not callable.");
             return 1;
@@ -130,10 +143,13 @@ class Skeleton
     {
         $tables = $this->info->fetchTableNames();
         foreach ($tables as $table) {
+
             $type = ($this->transform)($table);
+
             if ($type === null) {
                 continue;
             }
+
             $this->types[$type] = [
                 $table,
                 $this->info->fetchColumns($table),
@@ -149,159 +165,103 @@ class Skeleton
         $this->logger->info("Generating skeleton data source classes.");
         $this->logger->info("Namespace: " . $this->config->namespace);
         $this->logger->info("Directory: " . $this->directory);
-        $this->logger->info("Done!");
+
         foreach ($this->types as $type => $info) {
             $this->putFiles($type, ...$info);
         }
 
+        $this->logger->info("Done generating!");
         return null;
     }
 
-    protected function putFiles(string $type, string $table, array $columns, $sequence) : void
+    protected function putFiles(string $type, string $table, array $columns, ?string $sequence) : void
     {
         $dir = "{$this->directory}/{$type}";
-        $this->mkdir($dir);
-        $vars = $this->getVars($type, $table, $columns, $sequence);
-        foreach ($this->templates as $name => $code) {
+        $this->mkdir("{$dir}/_generated");
+
+        $vars = [
+            'COLDEFS' => $this->getColDefs($columns),
+            'COLUMNS' => $columns,
+            'DRIVER' => $this->connection->getDriverName(),
+            'NAMESPACE' => $this->namespace,
+            'RELATED' => $this->getRelated($type),
+            'SEQUENCE' => $sequence,
+            'TABLE' => $table,
+            'TYPE' => $type,
+        ];
+
+        foreach ($this->templates as $name => $tpl) {
+            $code = $this->render($tpl, $vars);
             $name = str_replace('Type', $type, $name);
             $file = "{$dir}/{$name}.php";
-            $this->putFile($file, $code, $vars);
+            $this->putFile($file, $code);
         }
     }
 
-    protected function getVars(string $type, string $table, array $columns, $sequence) : array
+    protected function getColDefs(array $columns) : array
     {
-        $primary = '';
-        $autoinc = 'null';
-        $list = [];
-        $info = '';
-        $props = '';
+        $coldefs = [];
 
         foreach ($columns as $col) {
-            $list[$col['name']] = $col['default'];
-            if ($col['primary']) {
-                $primary .= "        '{$col['name']}'," . PHP_EOL;
-            }
-            if ($col['autoinc']) {
-                $autoinc = "'{$col['name']}'";
-            }
-            $info .= "        '{$col['name']}' => " . var_export($col, true) . ',' . PHP_EOL;
-
-
-            $coltype = $col['type'];
+            $coldef = $col['type'];
             $unsigned = '';
-            if (substr(strtoupper($coltype), -9) == ' UNSIGNED') {
-                $unsigned = substr($coltype, -9);
-                $coltype = substr($coltype, 0, -9);
+
+            if (substr(strtoupper($coldef), -9) == ' UNSIGNED') {
+                $unsigned = substr($coldef, -9);
+                $coldef = substr($coldef, 0, -9);
             }
 
-            $props .= " * @property mixed \${$col['name']} {$coltype}";
             if ($col['size'] !== null) {
-                $props .= "({$col['size']}";
+                $coldef .= "({$col['size']}";
                 if ($col['scale'] !== null) {
-                    $props .= ",{$col['scale']}";
+                    $coldef .= ",{$col['scale']}";
                 }
-                $props .= ')';
+                $coldef .= ')';
             }
 
-            $props .= $unsigned;
+            $coldef .= $unsigned;
 
             if ($col['notnull'] === true) {
-                $props .= ' NOT NULL';
+                $coldef .= ' NOT NULL';
             }
-            $props .= PHP_EOL;
+
+            $coldefs[$col['name']] = $coldef;
         }
 
-        $primary = '[' . PHP_EOL . $primary . '    ]';
-
-        $repl = [
-            ' => array (' . PHP_EOL => ' => [' . PHP_EOL,
-            PHP_EOL . "  '" => PHP_EOL . "            '",
-            PHP_EOL . ")" => PHP_EOL . "        ]",
-            " => NULL," . PHP_EOL => " => null," . PHP_EOL,
-        ];
-
-        $info = str_replace(
-            array_keys($repl),
-            array_values($repl),
-            $info
-        );
-
-        $info = '[' . PHP_EOL . $info . '    ]';
-
-        $cols = "[" . PHP_EOL;
-        $default = "[" . PHP_EOL;
-        foreach ($list as $col => $val) {
-            $val = ($val === null) ? 'null' : var_export($val, true);
-            $cols .= "        '$col'," . PHP_EOL;
-            $default .= "        '$col' => $val," . PHP_EOL;
-        }
-        $cols .= "    ]";
-        $default .= "    ]";
-
-        $fields = $props;
-        $this->setRelatedFields($type, $fields);
-
-        $driver = $this->connection->getDriverName();
-
-        return [
-            '{NAMESPACE}' => $this->namespace,
-            '{TYPE}' => $type,
-            '{DRIVER}' => "'{$driver}'",
-            '{NAME}' => "'{$table}'",
-            '{COLUMN_NAMES}' => $cols,
-            '{COLUMN_DEFAULTS}' => $default,
-            '{AUTOINC_COLUMN}' => $autoinc,
-            '{PRIMARY_KEY}' => $primary,
-            '{COLUMNS}' => $info,
-            '{AUTOINC_SEQUENCE}' => ($sequence === null) ? 'null' : "'{$sequence}'",
-            '{PROPERTIES}' => rtrim($props),
-            '{FIELDS}' => rtrim($fields),
-        ];
+        return $coldefs;
     }
 
-    protected function setRelatedFields(string $type, string &$fields) : void
+    protected function getRelated(string $type) : array
     {
-        $class = "{$this->namespace}\\$type\\$type";
+        $related = [];
+        $class = "{$this->namespace}\\{$type}\\{$type}Related";
+
         if (! class_exists($class)) {
-            return;
+            return $related;
         }
 
-        $mappers = MapperLocator::new($this->connection);
-        $mapper = $mappers->get($class);
-        $rels = $mapper->getRelationships();
+        $props = (new ReflectionClass($class))->getProperties();
 
-        $rclass = new ReflectionClass(get_class($rels));
-        $rprop = $rclass->getProperty('relationships');
-        $rprop->setAccessible(true);
-        $defs = $rprop->getValue($rels);
+        foreach ($props as $prop) {
+            $type = (string) $prop->getType();
+            $nullable = substr($type, 0, 1) === '?';
 
-        foreach ($defs as $name => $def) {
-            $rclass = new ReflectionClass(get_class($def));
-            $rprop = $rclass->getProperty('foreignMapperClass');
-            $rprop->setAccessible(true);
-            $foreignMapperClass = $rprop->getValue($def);
-            switch (true) {
-                case $def instanceof OneToMany:
-                case $def instanceof ManyToMany:
-                    $type = "null|\\{$foreignMapperClass}RecordSet";
-                    break;
-                case $def instanceof ManyToOneVariant:
-                    $type = "null|false|\Atlas\Mapper\Record";
-                    $name .= " (variant)";
-                    break;
-                default:
-                    $type = "null|false|\\{$foreignMapperClass}Record";
-                    break;
+            if ($nullable) {
+                $type = '?\\' . substr($type, 1);
+            } else {
+                $type = '\\' . $type;
             }
-            $fields .= " * @property {$type} \${$name}" . PHP_EOL;
+
+            $related[$prop->getName()] = $type;
         }
+
+        return $related;
     }
 
     protected function mkdir(string $dir) : ?int
     {
         if ($this->fsio->isDir($dir)) {
-            $this->logger->info(" Skipped: mkdir {$dir}");
+            $this->logger->info(" Skipped: mkdir {$dir} (already exists)");
             return null;
         }
 
@@ -316,19 +276,24 @@ class Skeleton
         return null;
     }
 
-    protected function putFile(string $file, string $code, array $vars)
+    protected function putFile(string $file, string $code) : void
     {
-        $overwrite = substr($file, -10) == 'Fields.php'
-            || substr($file, -7) == 'Row.php'
-            || substr($file, -9) == 'Table.php';
+        $overwrite = substr($file, -5) == '_.php';
 
         if ($this->fsio->isFile($file) && ! $overwrite) {
-            $this->logger->info(" Skipped: $file");
+            $this->logger->info(" Skipped: {$file} (already exists)");
             return;
         }
 
-        $code = strtr($code, $vars);
         $this->fsio->put($file, $code);
-        $this->logger->info("+Success: $file");
+        $this->logger->info("+Success: {$file} (generated)");
+    }
+
+    protected function render(string $tpl, array $vars) : string
+    {
+        extract($vars);
+        ob_start();
+        require $tpl;
+        return "<?php" . PHP_EOL . ob_get_clean();
     }
 }

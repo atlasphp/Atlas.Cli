@@ -1,6 +1,6 @@
-# Atlas.Cli
+# Atlas.Skeleton
 
-This is the command-line interface package for Atlas. It is intended for use
-in your development environments, not your production ones.
+This is the skeleton generator package for Atlas. It is intended for use
+in development environments, not production.
 
 Please see the documentation [here](./docs/getting-started.md).

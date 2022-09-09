@@ -1,96 +1,111 @@
 <?php
 namespace Atlas\Cli;
 
-use Atlas\Cli\FakeFsio;
-use Atlas\Cli\Logger;
-use Aura\Cli\Stdio\Handle;
+use Atlas\Testing\DataSourceFixture;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class SkeletonTest extends \PHPUnit\Framework\TestCase
 {
     protected $fsio;
     protected $logger;
     protected $stdout;
     protected $factory;
+    protected $connection;
 
-    protected function setUp()
+    protected function setUp() : void
     {
-        $this->fsio = $this->newFsio();
+        $this->fsio = new Fsio();
         $this->stdout = fopen('php://memory', 'w+');
         $this->logger = new Logger($this->stdout);
+        $this->connection = (new DataSourceFixture())->exec();
+        $this->config = new Config([
+            'pdo' => [$this->connection->getPdo()],
+            'directory' => __DIR__ . '/DataSource',
+            'namespace' => 'Atlas\\Mapper\\DataSource',
+        ]);
+        $this->skeleton = new Skeleton($this->config, $this->fsio, $this->logger);
     }
 
-    protected function newFsio()
+    public function testInitialGeneration()
     {
-        $fsio = new FakeFsio();
+        $ds = $this->config->directory;
+        `rm -rf $ds/*`;
 
-        // put the real templates into the fake fsio
-        $dir = dirname(__DIR__) . '/resources/templates';
-        $tpls = [
-            'Type.tpl',
-            'TypeEvents.tpl',
-            'TypeFields.tpl',
-            'TypeRecord.tpl',
-            'TypeRecordSet.tpl',
-            'TypeRelationships.tpl',
-            'TypeSelect.tpl',
-            'TypeTable.tpl',
-            'TypeTableEvents.tpl',
-            'TypeRow.tpl',
-            'TypeTableSelect.tpl',
-        ];
-        foreach ($tpls as $tpl) {
-            $file = $dir . DIRECTORY_SEPARATOR . $tpl;
-            $fsio->put($file, file_get_contents($file));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/Thread_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadEvents_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRecord_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRecordSet_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRelated_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadSelect_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTable_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTableEvents_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRow_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTableSelect_.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/Thread.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadEvents.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadRecord.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadRecordSet.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadRelated.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadSelect.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadTable.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadTableEvents.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadRow.php"));
+        $this->assertFalse($this->fsio->isFile("{$ds}/Thread/ThreadTableSelect.php"));
+
+        ($this->skeleton)();
+
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/Thread_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadEvents_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRecord_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRecordSet_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRelated_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadSelect_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTable_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTableEvents_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadRow_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/_generated/ThreadTableSelect_.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/Thread.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadEvents.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadRecord.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadRecordSet.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadRelated.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadSelect.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadTable.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadTableEvents.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadRow.php"));
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadTableSelect.php"));
+    }
+
+    public function testRelatedFields()
+    {
+        $ds = $this->config->directory;
+        $mapperDir = dirname(__DIR__) . '/vendor/atlas/mapper/tests/DataSource';
+        $typeDirs = glob($mapperDir . '/[!.]*', GLOB_ONLYDIR);
+        foreach ($typeDirs as $typeDir) {
+            $type = strrchr($typeDir, DIRECTORY_SEPARATOR);
+            copy(
+                "{$typeDir}/{$type}Related.php",
+                "{$ds}/{$type}/{$type}Related.php"
+            );
         }
 
-        return $fsio;
+        // regenerate with relateds in place, to make sure nothing blows up
+        ($this->skeleton)();
+
+        $this->assertTrue($this->fsio->isFile("{$ds}/Thread/ThreadRelated.php"));
     }
 
-    public function test()
-    {
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/Author.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorEvents.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRelationships.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorSelect.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
-        $this->assertFalse($this->fsio->isFile('/app/DataSource/Author/AuthorTableSelect.php'));
-
-        $this->fsio->mkdir('/app/DataSource');
-
-        $config = new Config([
-            'pdo' => 'sqlite:' . __DIR__ . '/fixture.sqlite',
-            'directory' => '/app/DataSource',
-            'namespace' => 'App\\DataSource\\Author',
-        ]);
-
-        $skeleton = new Skeleton($config, $this->fsio, $this->logger);
-        $skeleton();
-
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/Author.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorEvents.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorFields.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecord.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRecordSet.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRelationships.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorSelect.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTable.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableEvents.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorRow.php'));
-        $this->assertTrue($this->fsio->isFile('/app/DataSource/Author/AuthorTableSelect.php'));
-    }
-
-    protected function readHandle($handle)
+    protected function readStdout()
     {
         $text = '';
-        rewind($handle);
-        while ($read .= fread($handle, 8192)) {
+        rewind($this->stdout);
+
+        while ($read = fread($this->stdout, 8192)) {
             $text .= $read;
         }
+
         return $text;
     }
 }

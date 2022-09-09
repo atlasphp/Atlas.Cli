@@ -6,10 +6,10 @@ class FsioTest extends \PHPUnit\Framework\TestCase
     protected $fsio;
     protected $base;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->fsio = new Fsio();
-        $this->base = __DIR__ . DIRECTORY_SEPARATOR . 'tmp';
+        $this->base = __DIR__ . DIRECTORY_SEPARATOR . 'DataSource';
     }
 
     public function testIsDir()
