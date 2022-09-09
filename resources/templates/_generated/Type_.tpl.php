@@ -23,9 +23,9 @@ use <?= "{$NAMESPACE}\\{$TYPE}\\{$TYPE}Table" ?>;
  * @method <?= $TYPE ?>Select select(array $whereEquals = [])
  * @method <?= $TYPE ?>Record newRecord(array $fields = [])
  * @method <?= $TYPE ?>Record[] newRecords(array $fieldSets)
- * @method <?= $TYPE ?>RecordSet newRecordSet(array $records = [])
+ * @method <?= $TYPE ?>RecordSet newRecordSet(<?= $TYPE ?>Record[] $records = [])
  * @method <?= $TYPE ?>Record turnRowIntoRecord(<?= $TYPE ?>Row $row, array $loadRelated = [])
- * @method <?= $TYPE ?>Record[] turnRowsIntoRecords(array $rows, array $loadRelated = [])
+ * @method <?= $TYPE ?>Record[] turnRowsIntoRecords(<?= $TYPE ?>Row[] $rows, array $loadRelated = [])
  */
 abstract class <?= $TYPE ?>_ extends Mapper
 {
