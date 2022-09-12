@@ -42,6 +42,13 @@ abstract class <?= $TYPE ?>Table_ extends Table
         );
     ?>
 
+    public const COLUMN_NAMES = [<?php
+        foreach ($COLUMNS as $name => $info) {
+            echo PHP_EOL . '        ' . var_export($name, true) . ',';
+        }
+        echo PHP_EOL . '    ';
+    ?>];
+
     public const PRIMARY_KEY = [<?php
         $primaryCount = 0;
         foreach ($COLUMNS as $col) {
