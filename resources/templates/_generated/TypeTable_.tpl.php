@@ -56,8 +56,9 @@ abstract class <?= $TYPE ?>Table_ extends Table
                 $primaryCount ++;
                 echo PHP_EOL . "        '{$col['name']}',";
             }
-        } ?>
-    ];
+        }
+        echo PHP_EOL . '    ';
+     ?>];
 
     public const COMPOSITE_KEY = <?= ($primaryCount > 1) ? 'true' : 'false'; ?>;
 
