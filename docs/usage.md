@@ -208,3 +208,23 @@ values:
 - `{AUTOINC_SEQUENCE}` => The name of the auotincrement sequence, if any.
 - `{PROPERTIES}` => A partial docblock of properties for a Row.
 - `{FIELDS}` => A partial docblock of field names for a Record.
+
+## Use of PostgreSQL Schemas
+
+The use of a schema other than `public` in a PostgreSQL database can be done via a [custom `PDO` instance](https://atlasphp.io/cassini/pdo/connection.html#2-6-1-2).
+The following example sets the schema to `custom_schema`:
+
+```php
+$pdo = new PDO(
+    'pgsql:dbname=testdb;host=localhost',
+    'username',
+    'password',
+);
+$pdo->exec('SET search_path TO custom_schema');
+
+return [
+    'pdo'       => [$pdo],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
+];
+```
