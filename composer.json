@@ -15,7 +15,7 @@
         "php": ">=7.1.0",
         "atlas/info": "~1.0",
         "atlas/mapper": "~1.0",
-        "psr/log": "~1.0"
+        "psr/log": "^1.0 || ^2.0 || ^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +23,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~7.0",
+        "phpunit/phpunit": "~7.0 || ~9.0",
         "pds/skeleton": "~1.0"
     },
     "autoload-dev": {

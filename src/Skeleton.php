@@ -30,6 +30,7 @@ class Skeleton
     protected $templates = [];
     protected $namespace;
     protected $types = [];
+    protected $transform;
 
     public function __construct(Config $config, Fsio $fsio, Logger $logger)
     {

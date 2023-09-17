@@ -12,7 +12,7 @@ class SkeletonTest extends \PHPUnit\Framework\TestCase
     protected $stdout;
     protected $factory;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->fsio = $this->newFsio();
         $this->stdout = fopen('php://memory', 'w+');
