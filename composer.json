@@ -15,7 +15,7 @@
         "php": ">=7.1.0",
         "atlas/info": "~1.0",
         "atlas/mapper": "~1.0",
-        "psr/log": "~1.0"
+        "psr/log": "^1.0 || ^2.0 || ^3.0"
     },
     "autoload": {
         "psr-4": {
