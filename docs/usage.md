@@ -228,3 +228,29 @@ return [
     'directory' => './src/App/DataSource',
 ];
 ```
+
+## Generate Only Specific Tables
+
+To generate only a specific table or tables, the [custom transformation](#custom-transformations) can be used.
+A callable can be specified that returns the table name with model type name if it should be generated, or `null` if it should be skipped.
+The following example generates only the models for the tables `page` and `comments`:
+
+```php
+// /path/to/skeleton-config.php
+return [
+    'pdo' => [
+        'mysql:dbname=testdb;host=localhost',
+        'username',
+        'password',
+    ],
+    'namespace' => 'App\\DataSource',
+    'directory' => './src/App/DataSource',
+    'transform' => static function (string $table) : ?string {
+        return [
+            // table name => model type name
+            'page'     => 'Page',
+            'comments' => 'Comment',
+        ][$table] ?? null;
+    },
+];
+```
